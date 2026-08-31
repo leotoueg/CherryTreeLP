@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Quote } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Play, MapPin, X } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogClose } from "../ui/dialog";
 import SectionHeading from "./SectionHeading";
 import SectionCTA from "./SectionCTA";
 import Reveal from "./Reveal";
@@ -9,40 +9,28 @@ import VideoPlayer from "./VideoPlayer";
 
 const TESTIMONIALS = [
   {
-    name: "Marcus Bennett",
-    company: "Bennett Roofing Co.",
+    name: "Stephen Cruey",
+    company: "Apex Bath Remodeling",
+    location: "Cleburne, TX",
+    industry: "Bath Remodeling",
+    poster: "/testimonials/apex-bath.jpg",
+    source: { kind: "loom", id: "586c3a1df10c4ff1b2773b68ccd3c4e9" },
+  },
+  {
+    name: "Emilio Talavera",
+    company: "Roofing Monkeys",
+    location: "Toronto, ON",
     industry: "Roofing",
-    quote: "We booked more qualified jobs in 90 days than the previous year combined.",
-    image:
-      "https://images.unsplash.com/photo-1672748341520-6a839e6c05bb?crop=entropy&cs=srgb&fm=jpg&w=900&q=85",
-    videoId: "aqz-KE-bpKQ",
+    poster: "/testimonials/roofing-monkeys.jpg",
+    source: { kind: "vimeo", id: "1214123088" },
   },
   {
-    name: "Devon Carter",
-    company: "Carter Kitchen & Bath",
-    industry: "Remodeling",
-    quote: "The footage they shot on-site outperformed everything we'd ever run.",
-    image:
-      "https://images.unsplash.com/photo-1621905252472-943afaa20e20?crop=entropy&cs=srgb&fm=jpg&w=900&q=85",
-    videoId: "aqz-KE-bpKQ",
-  },
-  {
-    name: "Ryan Mitchell",
-    company: "Mitchell Concrete",
-    industry: "Concrete",
-    quote: "It feels like we hired a full marketing department without the overhead.",
-    image:
-      "https://images.unsplash.com/photo-1742844019488-12a9356a7ace?crop=entropy&cs=srgb&fm=jpg&w=900&q=85",
-    videoId: "aqz-KE-bpKQ",
-  },
-  {
-    name: "Andre Coleman",
-    company: "Coleman HVAC",
-    industry: "HVAC",
-    quote: "Our calendar stays full and the leads finally match the work we want.",
-    image:
-      "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?crop=entropy&cs=srgb&fm=jpg&w=900&q=85",
-    videoId: "aqz-KE-bpKQ",
+    name: "Clint Roberts",
+    company: "Prime Baths of New Mexico",
+    location: "Albuquerque, NM",
+    industry: "Bath Remodeling",
+    poster: "/testimonials/prime-baths.jpg",
+    source: { kind: "mp4", src: "/testimonials/prime-baths.mp4" },
   },
 ];
 
@@ -59,9 +47,9 @@ export const VideoTestimonials = () => {
           subtitle="Real owners. Real jobs. Real growth. Press play."
         />
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {TESTIMONIALS.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.07}>
+            <Reveal key={t.name} delay={i * 0.08}>
               <motion.button
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -70,29 +58,28 @@ export const VideoTestimonials = () => {
                 data-testid={`testimonial-card-${i + 1}`}
                 aria-label={`Play testimonial from ${t.name}`}
               >
-                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/10">
                   <img
-                    src={t.image}
-                    alt={t.name}
+                    src={t.poster}
+                    alt={`${t.name} — ${t.company}`}
                     loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
                   />
-                  <span className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                  <span className="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-colors group-hover:bg-brand">
-                    <Play className="ml-0.5 h-5 w-5 fill-white text-white" />
+                  <span className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                  <span className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/70 backdrop-blur-md">
+                    {t.industry}
+                  </span>
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#285EE0]/90 shadow-[0_0_40px_-6px_rgba(40,94,224,0.95)] backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+                      <Play className="ml-0.5 h-6 w-6 fill-white text-white" />
+                    </span>
                   </span>
                   <span className="absolute bottom-0 left-0 right-0 p-5">
-                    <Quote className="mb-2 h-5 w-5 text-brand-accent" />
-                    <p className="text-sm leading-snug text-white/90">{t.quote}</p>
-                  </span>
-                </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-display text-lg uppercase tracking-tight text-white">{t.name}</p>
-                    <p className="text-xs text-white/50">{t.company}</p>
-                  </div>
-                  <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/50">
-                    {t.industry}
+                    <p className="font-display text-xl uppercase tracking-tight text-white">{t.name}</p>
+                    <p className="mt-1 text-sm text-white/70">{t.company}</p>
+                    <p className="mt-1 flex items-center gap-1 text-xs text-white/45">
+                      <MapPin className="h-3 w-3" /> {t.location}
+                    </p>
                   </span>
                 </div>
               </motion.button>
@@ -105,9 +92,22 @@ export const VideoTestimonials = () => {
 
       <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
         <DialogContent className="max-w-3xl border-white/10 bg-ink-900 p-3" data-testid="testimonial-modal">
-          <DialogTitle className="sr-only">{active?.name} testimonial</DialogTitle>
+          <DialogClose
+            data-testid="testimonial-modal-close"
+            className="absolute -right-3 -top-3 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white text-black shadow-lg outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-[#285EE0]"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+          <DialogTitle className="sr-only">{active?.name} — {active?.company} testimonial</DialogTitle>
           {active && (
-            <VideoPlayer videoId={active.videoId} poster={active.image} label={active.name} autoPlay testid="testimonial-video" />
+            <VideoPlayer
+              source={active.source}
+              poster={active.poster}
+              label={`${active.name} · ${active.company}`}
+              autoPlay
+              testid="testimonial-video"
+            />
           )}
         </DialogContent>
       </Dialog>
