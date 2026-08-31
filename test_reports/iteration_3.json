@@ -1,0 +1,56 @@
+{
+  "summary": "Frontend-only verification of Hero social-proof overlap bug fix and layout at desktop 1440x900, 1280 width, and mobile 390x844. Bug is FIXED: avatar container and adjacent text block have a 12px gap at both 1440 and 1280 widths — no horizontal overlap. All required data-testids are present and visible/hidden per breakpoint. No JS console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verification_details": {
+    "desktop_1440x900": {
+      "hero-warning-badge": "visible",
+      "hero-vsl": "visible",
+      "hero-primary-cta": "visible",
+      "hero-secondary-cta": "visible",
+      "hero-social-proof": "visible",
+      "headline_visible": true,
+      "avatars_rect": {"left": 112, "right": 204, "top": 875, "bottom": 911, "width": 92, "height": 36},
+      "text_block_rect": {"left": 216, "right": 470, "top": 878, "bottom": 908, "width": 254, "height": 30},
+      "horizontal_gap_px": 12,
+      "overlap": false,
+      "num_avatars": 3
+    },
+    "desktop_1280": {
+      "avatars_right": 124,
+      "text_block_left": 136,
+      "horizontal_gap_px": 12,
+      "overlap": false
+    },
+    "mobile_390x844": {
+      "hero-warning-badge": "visible (OK)",
+      "hero-vsl": "visible (OK)",
+      "hero-primary-cta-mobile": "visible (OK)",
+      "hero-secondary-cta": "hidden (OK)",
+      "hero-social-proof": "hidden (OK)",
+      "hero-primary-cta (desktop)": "hidden (OK)",
+      "video_above_cta": true,
+      "video_bottom": 857.69,
+      "cta_top": 906.69
+    },
+    "console_errors": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Hero.jsx uses shrink-0 on both the avatar wrapper (.flex.shrink-0) and each avatar img plus whitespace-nowrap on the trusted text — solid guard against the previous overlap regression.",
+    "Consider adding an explicit aria-label to the avatar images (currently alt=\"\") for accessibility; they are decorative but a11y tools flag empty alts inconsistently.",
+    "The industries divider uses xl:block; on lg (1024–1279) the industries text wraps onto row 2 via flex-wrap, which is intentional and works well."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Hero social-proof overlap bug is confirmed fixed at 1440 and 1280. Fix implemented via flex-wrap on container, shrink-0 on avatar wrapper + individual imgs, whitespace-nowrap on text. All hero data-testids working correctly across desktop and mobile.",
+  "rca of the issue": "Original bug: flex children (avatars) were shrinking, causing the -space-x-2 negative margins to pull the adjacent text over the avatar images. Fix (verified): added shrink-0 to the avatar wrap container and each img, plus flex-wrap on the parent to allow the industries text to wrap to a new line at narrower widths rather than compressing avatars. Result: 12px measured gap between avatar group and text block at both 1440 and 1280 viewports."
+}

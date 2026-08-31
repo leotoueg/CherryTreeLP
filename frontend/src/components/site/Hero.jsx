@@ -33,7 +33,7 @@ export const Hero = () => {
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
 
   return (
-    <section id="top" ref={ref} className="relative overflow-hidden pt-28 sm:pt-36" data-testid="hero-section">
+    <section id="top" ref={ref} className="relative overflow-hidden pt-24 sm:pt-28" data-testid="hero-section">
       <div className="glow-radial pointer-events-none absolute inset-x-0 top-0 h-[720px]" />
       <div className="pointer-events-none absolute left-1/2 top-24 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-brand/20 blur-[160px]" />
 
@@ -42,7 +42,7 @@ export const Hero = () => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto mb-8 flex w-full max-w-7xl justify-center px-5 sm:px-8"
+        className="relative mx-auto mb-6 flex w-full max-w-7xl justify-center px-5 sm:px-8"
       >
         <div
           className="inline-flex items-center gap-2 rounded-full border border-amber-300/40 bg-amber-400/15 px-4 py-1.5 shadow-[0_0_30px_-8px_rgba(251,191,36,0.6)]"
@@ -117,17 +117,17 @@ export const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-12 hidden items-center gap-6 lg:flex"
+            className="mt-12 hidden flex-wrap items-center gap-x-6 gap-y-3 lg:flex"
             data-testid="hero-social-proof"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
+            <div className="flex shrink-0 items-center gap-3">
+              <div className="flex shrink-0 -space-x-2">
                 {["1607990281513-2c110a25bd8c", "1600486913747-55e5470d6f40", "1541888946425-d81bb19240f5"].map((id) => (
                   <img
                     key={id}
                     src={`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=80&h=80&q=60`}
                     alt=""
-                    className="h-9 w-9 rounded-full border-2 border-ink-950 object-cover"
+                    className="h-9 w-9 shrink-0 rounded-full border-2 border-ink-950 object-cover"
                   />
                 ))}
               </div>
@@ -137,11 +137,11 @@ export const Hero = () => {
                     <Star key={i} className="h-3.5 w-3.5 fill-current" />
                   ))}
                 </div>
-                <p className="text-xs text-white/55">Trusted by contractors doing $1M–$25M+</p>
+                <p className="whitespace-nowrap text-xs text-white/55">Trusted by contractors doing $1M–$25M+</p>
               </div>
             </div>
-            <div className="h-8 w-px bg-white/10" />
-            <p className="max-w-xs text-xs uppercase tracking-[0.18em] text-white/40">
+            <div className="hidden h-8 w-px bg-white/10 xl:block" />
+            <p className="whitespace-nowrap text-xs uppercase tracking-[0.18em] text-white/40">
               Roofing · Remodeling · HVAC · Concrete · Landscaping
             </p>
           </motion.div>
@@ -154,7 +154,7 @@ export const Hero = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
           style={{ y: videoY, scale: videoScale }}
-          className="order-2 w-full"
+          className="order-2 w-full lg:-mt-28"
         >
           <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_40px_120px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl sm:p-3">
             <VideoPlayer poster={VSL_POSTER} label="Watch how it works" testid="hero-vsl" />
