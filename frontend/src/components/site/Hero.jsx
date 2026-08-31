@@ -33,7 +33,7 @@ export const Hero = () => {
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
 
   return (
-    <section id="top" ref={ref} className="relative overflow-hidden pt-24 sm:pt-28" data-testid="hero-section">
+    <section id="top" ref={ref} className="relative overflow-hidden pt-20 sm:pt-24" data-testid="hero-section">
       <div className="glow-radial pointer-events-none absolute inset-x-0 top-0 h-[720px]" />
       <div className="pointer-events-none absolute left-1/2 top-24 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-brand/20 blur-[160px]" />
 
@@ -42,7 +42,7 @@ export const Hero = () => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto mb-6 flex w-full max-w-7xl justify-center px-5 sm:px-8"
+        className="relative mx-auto mb-4 flex w-full max-w-7xl justify-center px-5 sm:px-8"
       >
         <div
           className="inline-flex items-center gap-2 rounded-full border border-amber-300/40 bg-amber-400/15 px-4 py-1.5 shadow-[0_0_30px_-8px_rgba(251,191,36,0.6)]"
@@ -56,14 +56,14 @@ export const Hero = () => {
         </div>
       </motion.div>
 
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-10 px-5 pb-20 sm:px-8 sm:pb-28 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-8 px-5 pb-10 sm:px-8 sm:pb-16 lg:grid lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-10">
         {/* Copy */}
         <div className="order-1 flex flex-col items-center text-center lg:items-start lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur-xl"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur-xl"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-brand-accent" />
             <span className="text-[10px] uppercase tracking-[0.22em] text-white/70 sm:text-[11px] sm:tracking-[0.24em]">
@@ -91,7 +91,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-            className="mt-7 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
+            className="mt-6 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
           >
             We help established contractors generate more profitable jobs with professionally filmed ads,
             paid advertising, CRM automation and sales systems. We fly to you. We build it all. We run it.
@@ -102,7 +102,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7, ease: EASE }}
-            className="mt-9 hidden flex-col gap-4 sm:flex-row lg:flex lg:justify-start"
+            className="mt-7 hidden flex-col gap-4 sm:flex-row lg:flex lg:justify-start"
           >
             <CTAButton to="apply" data-testid="hero-primary-cta">
               Book Your Strategy Call <ArrowRight className="h-4 w-4" />
@@ -117,7 +117,7 @@ export const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-12 hidden flex-wrap items-center gap-x-6 gap-y-3 lg:flex"
+            className="mt-8 hidden flex-wrap items-center gap-x-6 gap-y-3 lg:flex"
             data-testid="hero-social-proof"
           >
             <div className="flex shrink-0 items-center gap-3">
@@ -154,7 +154,7 @@ export const Hero = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
           style={{ y: videoY, scale: videoScale }}
-          className="order-2 w-full lg:-mt-28"
+          className="order-2 w-full lg:-mt-16"
         >
           <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_40px_120px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl sm:p-3">
             <VideoPlayer poster={VSL_POSTER} label="Watch how it works" testid="hero-vsl" />
