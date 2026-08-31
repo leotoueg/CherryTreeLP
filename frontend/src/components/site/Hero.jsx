@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Star, ArrowRight } from "lucide-react";
+import { Star, ArrowRight, TriangleAlert } from "lucide-react";
 import CTAButton from "./CTAButton";
 import VideoPlayer from "./VideoPlayer";
 
@@ -33,21 +33,40 @@ export const Hero = () => {
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
 
   return (
-    <section id="top" ref={ref} className="relative overflow-hidden pt-32 sm:pt-40" data-testid="hero-section">
+    <section id="top" ref={ref} className="relative overflow-hidden pt-28 sm:pt-36" data-testid="hero-section">
       <div className="glow-radial pointer-events-none absolute inset-x-0 top-0 h-[720px]" />
       <div className="pointer-events-none absolute left-1/2 top-24 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-brand/20 blur-[160px]" />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-5 pb-20 text-center sm:px-8 sm:pb-28 lg:grid-cols-2 lg:gap-12 lg:text-left">
-        {/* Left: copy */}
-        <div className="flex flex-col items-center lg:items-start">
+      {/* Attention badge */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative mx-auto mb-8 flex w-full max-w-7xl justify-center px-5 sm:px-8"
+      >
+        <div
+          className="inline-flex items-center gap-2 rounded-full border border-amber-300/40 bg-amber-400/15 px-4 py-1.5 shadow-[0_0_30px_-8px_rgba(251,191,36,0.6)]"
+          data-testid="hero-warning-badge"
+        >
+          <TriangleAlert className="h-3.5 w-3.5 text-amber-400" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300 sm:text-[11px] sm:tracking-[0.22em]">
+            For Contractors Doing Over $1M+ Per Year
+          </span>
+          <TriangleAlert className="h-3.5 w-3.5 text-amber-400" />
+        </div>
+      </motion.div>
+
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-10 px-5 pb-20 sm:px-8 sm:pb-28 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+        {/* Copy */}
+        <div className="order-1 flex flex-col items-center text-center lg:items-start lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur-xl"
+            transition={{ duration: 0.6, delay: 0.05 }}
+            className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur-xl"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-brand-accent" />
-            <span className="text-[11px] uppercase tracking-[0.24em] text-white/70">
+            <span className="text-[10px] uppercase tracking-[0.22em] text-white/70 sm:text-[11px] sm:tracking-[0.24em]">
               Done-for-you growth for established contractors
             </span>
           </motion.div>
@@ -72,17 +91,18 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-            className="mt-8 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
+            className="mt-7 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
           >
             We help established contractors generate more profitable jobs with professionally filmed ads,
             paid advertising, CRM automation and sales systems. We fly to you. We build it all. We run it.
           </motion.p>
 
+          {/* Desktop CTAs (both) */}
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7, ease: EASE }}
-            className="mt-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
+            className="mt-9 hidden flex-col gap-4 sm:flex-row lg:flex lg:justify-start"
           >
             <CTAButton to="apply" data-testid="hero-primary-cta">
               Book Your Strategy Call <ArrowRight className="h-4 w-4" />
@@ -92,11 +112,12 @@ export const Hero = () => {
             </CTAButton>
           </motion.div>
 
+          {/* Social proof (desktop only) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:items-center"
+            className="mt-12 hidden items-center gap-6 lg:flex"
             data-testid="hero-social-proof"
           >
             <div className="flex items-center gap-3">
@@ -119,23 +140,33 @@ export const Hero = () => {
                 <p className="text-xs text-white/55">Trusted by contractors doing $1M–$25M+</p>
               </div>
             </div>
-            <div className="hidden h-8 w-px bg-white/10 sm:block" />
+            <div className="h-8 w-px bg-white/10" />
             <p className="max-w-xs text-xs uppercase tracking-[0.18em] text-white/40">
               Roofing · Remodeling · HVAC · Concrete · Landscaping
             </p>
           </motion.div>
         </div>
 
-        {/* Right: VSL */}
+        {/* Video */}
         <motion.div
           id="vsl"
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
           style={{ y: videoY, scale: videoScale }}
-          className="relative w-full"
+          className="order-2 w-full"
         >
           <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_40px_120px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl sm:p-3">
             <VideoPlayer poster={VSL_POSTER} label="Watch how it works" testid="hero-vsl" />
           </div>
         </motion.div>
+
+        {/* Mobile CTA (single, after video) */}
+        <div className="order-3 flex w-full justify-center lg:hidden">
+          <CTAButton to="apply" data-testid="hero-primary-cta-mobile" className="w-full sm:w-auto">
+            Book Your Strategy Call <ArrowRight className="h-4 w-4" />
+          </CTAButton>
+        </div>
       </div>
     </section>
   );
