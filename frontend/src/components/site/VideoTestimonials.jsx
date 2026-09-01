@@ -13,8 +13,8 @@ const TESTIMONIALS = [
     company: "Apex Bath Remodeling",
     location: "Cleburne, TX",
     industry: "Bath Remodeling",
-    poster: "/testimonials/apex-bath.jpg",
-    source: { kind: "loom", id: "586c3a1df10c4ff1b2773b68ccd3c4e9" },
+    poster: "/testimonials/apex-baths.jpg",
+    source: { kind: "mp4", src: "/testimonials/apex-baths.mp4" },
   },
   {
     name: "Emilio Talavera",
@@ -22,7 +22,7 @@ const TESTIMONIALS = [
     location: "Toronto, ON",
     industry: "Roofing",
     poster: "/testimonials/roofing-monkeys.jpg",
-    source: { kind: "vimeo", id: "1214123088" },
+    source: { kind: "mp4", src: "/testimonials/roofing-monkeys.mp4" },
   },
   {
     name: "Clint Roberts",
@@ -31,6 +31,14 @@ const TESTIMONIALS = [
     industry: "Bath Remodeling",
     poster: "/testimonials/prime-baths.jpg",
     source: { kind: "mp4", src: "/testimonials/prime-baths.mp4" },
+  },
+  {
+    name: "CFC",
+    company: "CFC",
+    location: "United States",
+    industry: "Home Services",
+    poster: "/testimonials/cfc.jpg",
+    source: { kind: "mp4", src: "/testimonials/cfc.mp4" },
   },
 ];
 
@@ -47,9 +55,9 @@ export const VideoTestimonials = () => {
           subtitle="Real owners. Real jobs. Real growth. Press play."
         />
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {TESTIMONIALS.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.08}>
+            <Reveal key={t.name + t.company} delay={i * 0.08}>
               <motion.button
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -58,7 +66,7 @@ export const VideoTestimonials = () => {
                 data-testid={`testimonial-card-${i + 1}`}
                 aria-label={`Play testimonial from ${t.name}`}
               >
-                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/10">
+                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10 bg-ink-900">
                   <img
                     src={t.poster}
                     alt={`${t.name} — ${t.company}`}
