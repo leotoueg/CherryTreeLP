@@ -50,9 +50,11 @@ class LeadCreate(BaseModel):
     phone: str
     service_offered: str
     annual_revenue: str
-    postal_code: str
+    city: Optional[str] = ""
     website: Optional[str] = ""
     notes: Optional[str] = ""
+    preferred_date: Optional[str] = ""
+    preferred_time: Optional[str] = ""
 
 
 class Lead(BaseModel):
@@ -64,9 +66,11 @@ class Lead(BaseModel):
     phone: str
     service_offered: str
     annual_revenue: str
-    postal_code: str
+    city: str = ""
     website: str = ""
     notes: str = ""
+    preferred_date: str = ""
+    preferred_time: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
