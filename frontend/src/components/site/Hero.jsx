@@ -21,6 +21,7 @@ const lineVariants = {
 };
 
 const VSL_POSTER = "/vsl/vsl-poster.jpg";
+const VSL_SOURCE = { kind: "mp4", src: "/vsl/vsl.mp4" };
 
 export const Hero = () => {
   const ref = useRef(null);
@@ -41,36 +42,38 @@ export const Hero = () => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto mb-4 flex w-full max-w-7xl justify-center px-5 sm:px-8"
+        className="relative mx-auto mb-5 flex w-full max-w-7xl justify-center px-5 sm:px-8"
       >
         <div
-          className="inline-flex items-center gap-2 rounded-full border border-amber-300/40 bg-amber-400/15 px-4 py-1.5 shadow-[0_0_30px_-8px_rgba(251,191,36,0.6)]"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-amber-300/40 bg-amber-400/15 px-3 py-2 shadow-[0_0_30px_-8px_rgba(251,191,36,0.6)] sm:w-auto sm:px-5 sm:py-1.5"
           data-testid="hero-warning-badge"
         >
-          <TriangleAlert className="h-3.5 w-3.5 text-amber-400" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300 sm:text-[11px] sm:tracking-[0.22em]">
+          <TriangleAlert className="h-3 w-3 shrink-0 text-amber-400 sm:h-3.5 sm:w-3.5" />
+          <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.04em] text-amber-300 sm:text-[11px] sm:tracking-[0.22em]">
             For Contractors Doing Over $2M+ Per Year
           </span>
-          <TriangleAlert className="h-3.5 w-3.5 text-amber-400" />
+          <TriangleAlert className="h-3 w-3 shrink-0 text-amber-400 sm:h-3.5 sm:w-3.5" />
         </div>
       </motion.div>
 
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-8 px-5 pb-10 sm:px-8 sm:pb-16 lg:grid lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-10">
-        {/* Copy */}
-        <div className="order-1 flex flex-col items-center text-center lg:items-start lg:text-left">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center px-5 pb-10 sm:px-8 sm:pb-16 lg:grid lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-10">
+        {/* Left column */}
+        <div className="flex w-full flex-col items-center text-center lg:items-start lg:text-left">
+          {/* Eyebrow (desktop only) */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur-xl"
+            className="mb-5 hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur-xl lg:inline-flex"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-brand-accent" />
-            <span className="text-[10px] uppercase tracking-[0.22em] text-white/70 sm:text-[11px] sm:tracking-[0.24em]">
+            <span className="text-[11px] uppercase tracking-[0.24em] text-white/70">
               Done-for-you growth for established contractors
             </span>
           </motion.div>
 
-          <h1 className="font-display uppercase leading-[0.9] tracking-tight text-5xl sm:text-6xl lg:text-7xl">
+          {/* Headline */}
+          <h1 className="font-display uppercase leading-[0.9] tracking-tight text-4xl sm:text-6xl lg:text-7xl">
             {HEADLINE.map((line, i) => (
               <span key={i} className="block overflow-hidden py-0.5">
                 <motion.span
@@ -86,6 +89,19 @@ export const Hero = () => {
             ))}
           </h1>
 
+          {/* Mobile video (between headline and subtext) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: EASE }}
+            className="mt-7 w-full lg:hidden"
+          >
+            <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_30px_90px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl">
+              <VideoPlayer source={VSL_SOURCE} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl-mobile" />
+            </div>
+          </motion.div>
+
+          {/* Subheadline */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -96,7 +112,14 @@ export const Hero = () => {
             paid advertising, CRM automation and sales systems. We fly to you. We build it all. We run it.
           </motion.p>
 
-          {/* Desktop CTAs (both) */}
+          {/* Mobile CTA (after subtext) */}
+          <div className="mt-8 flex w-full justify-center lg:hidden">
+            <CTAButton to="apply" data-testid="hero-primary-cta-mobile" className="w-full sm:w-auto">
+              Book Your Strategy Call <ArrowRight className="h-4 w-4" />
+            </CTAButton>
+          </div>
+
+          {/* Desktop CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -146,26 +169,19 @@ export const Hero = () => {
           </motion.div>
         </div>
 
-        {/* Video */}
+        {/* Desktop video (right column) */}
         <motion.div
           id="vsl"
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
           style={{ y: videoY, scale: videoScale }}
-          className="order-2 w-full lg:-mt-16"
+          className="hidden w-full lg:block"
         >
           <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_40px_120px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl sm:p-3">
-            <VideoPlayer source={{ kind: "mp4", src: "/vsl/vsl.mp4" }} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl" />
+            <VideoPlayer source={VSL_SOURCE} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl" />
           </div>
         </motion.div>
-
-        {/* Mobile CTA (single, after video) */}
-        <div className="order-3 flex w-full justify-center lg:hidden">
-          <CTAButton to="apply" data-testid="hero-primary-cta-mobile" className="w-full sm:w-auto">
-            Book Your Strategy Call <ArrowRight className="h-4 w-4" />
-          </CTAButton>
-        </div>
       </div>
     </section>
   );

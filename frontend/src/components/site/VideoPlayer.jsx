@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,6 +10,53 @@ function embedUrl(source) {
   if (kind === "vimeo") return `https://player.vimeo.com/video/${id}?app_id=122963&autoplay=1&title=0&byline=0&portrait=0`;
   if (kind === "loom") return `https://www.loom.com/embed/${id}?autoplay=1&hideEmbedTopBar=true`;
   return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+}
+
+// Distraction-free MP4 player: no seek bar, no duration — click anywhere to play/pause.
+function MinimalMp4({ src, poster, testid }) {
+  const ref = useRef(null);
+  const [paused, setPaused] = useState(false);
+
+  const toggle = () => {
+    const v = ref.current;
+    if (!v) return;
+    if (v.paused) v.play();
+    else v.pause();
+  };
+
+  return (
+    <div className="absolute inset-0 cursor-pointer" onClick={toggle} data-testid={`${testid}-surface`}>
+      <video
+        ref={ref}
+        className="h-full w-full bg-black object-cover"
+        src={src}
+        poster={poster}
+        autoPlay
+        playsInline
+        controlsList="nodownload noplaybackrate"
+        disablePictureInPicture
+        onContextMenu={(e) => e.preventDefault()}
+        onPlay={() => setPaused(false)}
+        onPause={() => setPaused(true)}
+        onEnded={() => setPaused(true)}
+      />
+      <AnimatePresence>
+        {paused && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/25"
+          >
+            <span className="flex h-20 w-20 items-center justify-center rounded-full bg-[#285EE0] shadow-[0_0_50px_-6px_rgba(40,94,224,0.95)]">
+              <Play className="ml-1 h-8 w-8 fill-white text-white" />
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 export const VideoPlayer = ({
@@ -32,17 +79,7 @@ export const VideoPlayer = ({
       <AnimatePresence mode="wait">
         {playing ? (
           src.kind === "mp4" ? (
-            <motion.video
-              key="mp4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute inset-0 h-full w-full bg-black object-cover"
-              src={src.src}
-              poster={poster}
-              controls
-              autoPlay
-              playsInline
-            />
+            <MinimalMp4 key="mp4" src={src.src} poster={poster} testid={testid} />
           ) : (
             <motion.iframe
               key="frame"

@@ -1,8 +1,8 @@
 import Reveal from "./Reveal";
 
 const STATS = [
-  { value: "$2M+", label: "Ad spend managed" },
-  { value: "500+", label: "Jobs booked" },
+  { value: "$100K+", label: "Monthly ad spend managed" },
+  { value: "500+", label: "Sold projects" },
   { value: "7-Day", label: "Launch" },
 ];
 
