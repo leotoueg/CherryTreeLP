@@ -108,13 +108,15 @@ async def get_status_checks():
 @api_router.post("/leads", response_model=Lead)
 async def create_lead(input: LeadCreate):
     lead = Lead(**input.model_dump())
-    doc = lead.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.leads.insert_one(doc)
+    payload = lead.model_dump()
+    payload['created_at'] = payload['created_at'].isoformat()
 
-    # Forward to owner's webhook without blocking the response
+    # Insert a copy so the ObjectId that Mongo injects doesn't taint the webhook payload
+    await db.leads.insert_one(dict(payload))
+
+    # Forward a clean, JSON-serializable copy to the owner's webhook
     if LEAD_WEBHOOK_URL:
-        asyncio.create_task(asyncio.to_thread(_forward_to_webhook, doc))
+        asyncio.create_task(asyncio.to_thread(_forward_to_webhook, payload))
 
     return lead
 
