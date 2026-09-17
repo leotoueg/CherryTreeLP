@@ -136,7 +136,7 @@ export const Hero = () => {
                     <Star key={i} className="h-3.5 w-3.5 fill-current" />
                   ))}
                 </div>
-                <p className="whitespace-nowrap text-xs text-white/55">Trusted by contractors doing $1M–$25M+</p>
+                <p className="whitespace-nowrap text-xs text-white/55">Trusted by contractors doing $2M–$25M+</p>
               </div>
             </div>
             <div className="hidden h-8 w-px bg-white/10 xl:block" />

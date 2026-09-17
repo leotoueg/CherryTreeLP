@@ -5,7 +5,7 @@ import SectionCTA from "./SectionCTA";
 import Reveal from "./Reveal";
 
 const IDEAL = [
-  "You're doing $1M+ in annual revenue",
+  "You're doing $2M+ in annual revenue",
   "You want more profitable jobs",
   "You already have crews in place",
   "You can handle more work",
