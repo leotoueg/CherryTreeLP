@@ -20,8 +20,7 @@ const lineVariants = {
   }),
 };
 
-const VSL_POSTER =
-  "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
+const VSL_POSTER = "/vsl/vsl-poster.jpg";
 
 export const Hero = () => {
   const ref = useRef(null);
@@ -157,7 +156,7 @@ export const Hero = () => {
           className="order-2 w-full lg:-mt-16"
         >
           <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_40px_120px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl sm:p-3">
-            <VideoPlayer poster={VSL_POSTER} label="Watch how it works" testid="hero-vsl" />
+            <VideoPlayer source={{ kind: "mp4", src: "/vsl/vsl.mp4" }} poster={VSL_POSTER} label="Watch how it works" testid="hero-vsl" />
           </div>
         </motion.div>
 
