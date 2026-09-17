@@ -1,0 +1,20 @@
+{
+  "summary": "Backend regression testing of Cherry Tree Agency /api/leads endpoint after LEAD_WEBHOOK_URL change. All 7 pytest cases passed: happy path POST, GET listing (newest-first + created lead present), invalid email 422, missing phone 422, missing many required 422, and log inspection confirming NO new 'Webhook forward failed' / ObjectId serialization errors after our POST. The webhook forward runs in a background asyncio task and did not produce any error entry. Existing single occurrence in backend.err.log is from 2026-09-17 (pre-fix) and is unchanged.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_leads_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "asyncio.create_task on a fire-and-forget coroutine (line 119) discards the task reference; if it errors, the exception is only visible via a warning inside _forward_to_webhook. Consider keeping a strong ref (e.g., add to a set) to avoid the task being GC'd early on some event loops, though in practice FastAPI keeps the loop alive.",
+    "Lead model exposes owner PII (email/phone) in GET /api/leads with no auth. If this endpoint is meant only for owner viewing, add auth or restrict.",
+    "Website field has no URL validation; accepts any string."
+  ],
+  "updated_files": ["/app/backend/tests/test_leads_api.py"],
+  "success_rate": {"backend": "100% (7/7)", "frontend": "n/a"},
+  "test_credentials": "none required (public endpoint)",
+  "seed_data_creation": "Single test lead posted with email qa-webhook-test@example.com; deleted from Mongo via session-scoped autouse cleanup fixture. Verified count=0 post-run.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "test_leads_api.py captures the backend.err.log offset at module import to check ONLY new log entries (a stale 'Webhook forward failed' at line 146 from 2026-09-17 pre-fix is expected and ignored). Cleanup fixture removes leads by email. Keep live POSTs minimal because /api/leads forwards to the real LeadConnector webhook (cbf1d880 URL).",
+  "rca of the issue": "No issue found. Prior ObjectId serialization bug remains fixed: server.py inserts dict(payload) into Mongo and forwards the pre-insert clean payload; the Mongo _id injection therefore never touches the webhook body. New LeadConnector webhook URL is reachable (returned within timeout, no exception logged)."
+}

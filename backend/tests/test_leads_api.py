@@ -1,11 +1,16 @@
-"""Backend tests for Cherry Tree Agency lead capture endpoints."""
+"""Backend tests for Cherry Tree Agency lead capture endpoints.
+
+Minimizes live POSTs since each successful POST fires the real LeadConnector webhook.
+Uses a single, clearly-labeled happy-path lead (email qa-webhook-test@example.com).
+Cleanup fixture deletes any TEST leads from Mongo after the run.
+"""
 import os
+import time
 import pytest
 import requests
 
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL")
 if not BASE_URL:
-    # Fallback: read from frontend .env to test the same URL the user sees
     env_path = "/app/frontend/.env"
     with open(env_path) as fh:
         for line in fh:
@@ -16,6 +21,27 @@ if not BASE_URL:
 BASE_URL = BASE_URL.rstrip("/")
 API = f"{BASE_URL}/api"
 
+TEST_EMAIL = "qa-webhook-test@example.com"
+
+# Capture backend err log size at module import (BEFORE any POSTs happen)
+_BACKEND_ERR_LOG = "/var/log/supervisor/backend.err.log"
+try:
+    _LOG_START_OFFSET = os.path.getsize(_BACKEND_ERR_LOG)
+except OSError:
+    _LOG_START_OFFSET = None
+
+VALID_PAYLOAD = {
+    "owner_name": "QA Webhook Test",
+    "company_name": "TEST_QA Webhook Co.",
+    "email": TEST_EMAIL,
+    "phone": "(555) 000-0000",
+    "service_offered": "Roofing",
+    "annual_revenue": "$2M \u2013 $5M",
+    "postal_code": "90210",
+    "website": "https://qa-webhook-test.example",
+    "notes": "QA webhook regression test - safe to ignore",
+}
+
 
 @pytest.fixture(scope="module")
 def client():
@@ -24,96 +50,96 @@ def client():
     return s
 
 
-# --------------- Health ---------------
 class TestHealth:
     def test_root(self, client):
         r = client.get(f"{API}/")
         assert r.status_code == 200
         data = r.json()
-        assert "message" in data
-        assert "Cherry Tree" in data["message"]
+        assert "Cherry Tree" in data.get("message", "")
 
 
-VALID_PAYLOAD = {
-    "owner_name": "TEST_John Smith",
-    "company_name": "TEST_Smith Roofing Co.",
-    "email": "test_john@example.com",
-    "phone": "(555) 123-4567",
-    "service_offered": "Roofing",
-    "annual_revenue": "$2M – $5M",
-    "postal_code": "90210",
-    "website": "https://smithroofing.example",
-    "notes": "TEST notes",
-}
-
-
-# --------------- Leads: Create / List ---------------
 class TestLeads:
     created_id = None
 
     def test_create_lead_valid(self, client):
+        """Single live POST -- exercises webhook forward."""
         r = client.post(f"{API}/leads", json=VALID_PAYLOAD)
         assert r.status_code == 200, r.text
         data = r.json()
-        # Structure & values
-        assert "id" in data and isinstance(data["id"], str) and len(data["id"]) > 0
+        assert isinstance(data.get("id"), str) and len(data["id"]) > 0
         assert "created_at" in data
-        assert data["owner_name"] == VALID_PAYLOAD["owner_name"]
-        assert data["company_name"] == VALID_PAYLOAD["company_name"]
-        assert data["email"] == VALID_PAYLOAD["email"]
-        assert data["phone"] == VALID_PAYLOAD["phone"]
-        assert data["service_offered"] == VALID_PAYLOAD["service_offered"]
-        assert data["annual_revenue"] == VALID_PAYLOAD["annual_revenue"]
-        assert data["postal_code"] == VALID_PAYLOAD["postal_code"]
-        assert data["website"] == VALID_PAYLOAD["website"]
-        assert data["notes"] == VALID_PAYLOAD["notes"]
+        for k, v in VALID_PAYLOAD.items():
+            assert data[k] == v, f"Field {k} mismatch: {data[k]!r} != {v!r}"
         TestLeads.created_id = data["id"]
+
+    def test_get_leads_contains_created(self, client):
+        assert TestLeads.created_id is not None
+        r = client.get(f"{API}/leads")
+        assert r.status_code == 200
+        leads = r.json()
+        assert isinstance(leads, list) and len(leads) > 0
+        ids = [l["id"] for l in leads]
+        assert TestLeads.created_id in ids
+        # newest first check
+        timestamps = [l["created_at"] for l in leads]
+        assert timestamps == sorted(timestamps, reverse=True)
+        # newest lead should be ours
+        assert leads[0]["id"] == TestLeads.created_id
 
     def test_create_lead_invalid_email(self, client):
         payload = dict(VALID_PAYLOAD)
         payload["email"] = "not-an-email"
-        payload["owner_name"] = "TEST_invalid_email"
         r = client.post(f"{API}/leads", json=payload)
         assert r.status_code == 422, r.text
 
-    def test_create_lead_missing_required(self, client):
-        payload = {"owner_name": "TEST_missing"}  # missing many fields
-        r = client.post(f"{API}/leads", json=payload)
-        assert r.status_code == 422, r.text
-
-    def test_create_lead_missing_single_field(self, client):
+    def test_create_lead_missing_phone(self, client):
         payload = dict(VALID_PAYLOAD)
-        payload.pop("phone")  # required
+        payload.pop("phone")
         r = client.post(f"{API}/leads", json=payload)
         assert r.status_code == 422, r.text
 
-    def test_get_leads_contains_created(self, client):
-        assert TestLeads.created_id is not None, "Prerequisite create failed"
-        r = client.get(f"{API}/leads")
-        assert r.status_code == 200
-        leads = r.json()
-        assert isinstance(leads, list)
-        assert len(leads) > 0
-        ids = [l["id"] for l in leads]
-        assert TestLeads.created_id in ids
+    def test_create_lead_missing_many_required(self, client):
+        r = client.post(f"{API}/leads", json={"owner_name": "only"})
+        assert r.status_code == 422, r.text
 
-        # Verify newest first: created_at should be non-increasing
-        timestamps = [l["created_at"] for l in leads]
-        assert timestamps == sorted(timestamps, reverse=True), "Leads not sorted newest first"
+    def test_webhook_forward_no_error_logged(self, client):
+        """Regression: ObjectId serialization bug -- ensure no 'Webhook forward failed'
+        appears in backend.err.log AFTER our POST timestamp. Webhook fires in a
+        background asyncio task, so wait a few seconds before inspecting."""
+        if _LOG_START_OFFSET is None:
+            pytest.skip(f"{_BACKEND_ERR_LOG} not accessible")
 
-    def test_create_optional_fields_default(self, client):
-        payload = {
-            "owner_name": "TEST_optional",
-            "company_name": "TEST_Co",
-            "email": "test_opt@example.com",
-            "phone": "555-0000",
-            "service_offered": "HVAC",
-            "annual_revenue": "$1M – $2M",
-            "postal_code": "12345",
-        }
-        r = client.post(f"{API}/leads", json=payload)
-        assert r.status_code == 200, r.text
-        data = r.json()
-        assert data["website"] == ""
-        assert data["notes"] == ""
-        assert data["service_offered"] == "HVAC"
+        # Wait for background task to complete
+        time.sleep(4)
+
+        with open(_BACKEND_ERR_LOG, "r", errors="ignore") as fh:
+            fh.seek(_LOG_START_OFFSET)
+            new_content = fh.read()
+
+        assert "Webhook forward failed" not in new_content, (
+            "Regression: 'Webhook forward failed' found in NEW log entries:\n"
+            + new_content[-2000:]
+        )
+        assert "Object of type ObjectId is not JSON serializable" not in new_content, (
+            "Regression: ObjectId serialization error in NEW log entries:\n"
+            + new_content[-2000:]
+        )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_test_leads():
+    yield
+    # Delete any test leads we created directly from Mongo to avoid polluting CRM/DB.
+    try:
+        from pymongo import MongoClient
+        from dotenv import dotenv_values
+        env = dotenv_values("/app/backend/.env")
+        mongo_url = env.get("MONGO_URL", "").strip('"')
+        db_name = env.get("DB_NAME", "").strip('"')
+        if mongo_url and db_name:
+            mc = MongoClient(mongo_url)
+            res = mc[db_name]["leads"].delete_many({"email": TEST_EMAIL})
+            print(f"[cleanup] Deleted {res.deleted_count} test lead(s) with email={TEST_EMAIL}")
+            mc.close()
+    except Exception as e:
+        print(f"[cleanup] Failed: {e}")
