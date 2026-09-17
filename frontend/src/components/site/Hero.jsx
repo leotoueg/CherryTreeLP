@@ -49,7 +49,7 @@ export const Hero = () => {
         >
           <TriangleAlert className="h-3.5 w-3.5 text-amber-400" />
           <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300 sm:text-[11px] sm:tracking-[0.22em]">
-            For Contractors Doing Over $1M+ Per Year
+            For Contractors Doing Over $2M+ Per Year
           </span>
           <TriangleAlert className="h-3.5 w-3.5 text-amber-400" />
         </div>

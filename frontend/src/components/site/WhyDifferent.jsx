@@ -23,7 +23,7 @@ export const WhyDifferent = () => {
     <section className="relative py-24 sm:py-32" data-testid="why-different-section">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          chapter="01"
+          chapter="02"
           kicker="Why we're different"
           title={<>Most agencies run ads.<br />We become your growth team.</>}
           subtitle="There is a difference between renting attention and building an asset. We build the asset."

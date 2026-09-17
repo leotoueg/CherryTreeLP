@@ -25,6 +25,14 @@ const FAQS = [
     a: "Very little after the shoot day. We handle production, ads, tech and follow-up. You approve the direction and take the qualified calls we generate.",
   },
   {
+    q: "How much does it cost?",
+    a: "Pricing is scoped on your strategy call, because it's built around your market, your goals and the assets we produce for you. This is a done-for-you growth partner for established contractors ready to scale — not a cheap monthly retainer. If we're not confident we can generate a strong return, we'll tell you.",
+  },
+  {
+    q: "What if I've been burned by an agency before?",
+    a: "Most of our clients have. The difference: we fly out, film real content and build the entire system ourselves — then optimize it every week. No outsourcing, no stock footage, no set-and-forget, no long-term handcuffs. You see the work, and the results, first-hand.",
+  },
+  {
     q: "Is this coaching or a course?",
     a: "No. This is fully done-for-you. We build and run the entire acquisition system as your in-house growth team.",
   },

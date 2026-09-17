@@ -5,6 +5,7 @@ import Lenis from "lenis";
 import Header from "./components/site/Header";
 import Hero from "./components/site/Hero";
 import TrustBar from "./components/site/TrustBar";
+import StatsBand from "./components/site/StatsBand";
 import CTABand from "./components/site/CTABand";
 import WhyDifferent from "./components/site/WhyDifferent";
 import ProcessTimeline from "./components/site/ProcessTimeline";
@@ -48,11 +49,12 @@ function App() {
       <Header />
       <main>
         <Hero />
+        <StatsBand />
         <TrustBar />
         <CTABand text="We become your in-house growth team." testid="cta-band-top" />
+        <VideoTestimonials />
         <WhyDifferent />
         <ProcessTimeline />
-        <VideoTestimonials />
         <FeatureGrid />
         <WhoThisIsFor />
         <FAQ />

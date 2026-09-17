@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, CheckCircle2, ShieldCheck, BadgeCheck, Clock } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -14,6 +14,12 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const SERVICES = ["Roofing", "Bathroom Remodeling", "Kitchen Remodeling", "Painting", "Concrete", "Landscaping", "HVAC", "Windows & Doors", "Flooring", "Pools", "Home Services", "Other"];
 const REVENUE = ["$1M – $2M", "$2M – $5M", "$5M – $10M", "$10M – $25M", "$25M+", "Under $1M"];
 
+const GUARANTEES = [
+  { icon: ShieldCheck, text: "No long-term contracts" },
+  { icon: BadgeCheck, text: "100% done-for-you" },
+  { icon: Clock, text: "Campaigns live in ~7 days" },
+];
+
 const EMPTY = {
   owner_name: "", company_name: "", email: "", phone: "",
   service_offered: "", annual_revenue: "", postal_code: "", website: "", notes: "",
@@ -24,17 +30,26 @@ const inputCls =
 
 export const AppointmentForm = () => {
   const [form, setForm] = useState(EMPTY);
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const setVal = (k) => (v) => setForm((f) => ({ ...f, [k]: v }));
 
+  const goNext = () => {
+    const required = ["owner_name", "company_name", "email", "phone"];
+    if (required.find((k) => !form[k].trim())) {
+      toast.error("Please complete your contact details.");
+      return;
+    }
+    setStep(2);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
-    const required = ["owner_name", "company_name", "email", "phone", "service_offered", "annual_revenue", "postal_code"];
-    const missing = required.find((k) => !form[k].trim());
-    if (missing) {
+    const required = ["service_offered", "annual_revenue", "postal_code"];
+    if (required.find((k) => !form[k].trim())) {
       toast.error("Please complete all required fields.");
       return;
     }
@@ -65,7 +80,19 @@ export const AppointmentForm = () => {
           align="center"
         />
 
-        <Reveal className="mt-14">
+        {/* Risk reversal */}
+        <Reveal className="mt-8">
+          <div className="mx-auto flex max-w-2xl flex-col items-center justify-center gap-3 sm:flex-row sm:gap-8" data-testid="risk-reversal">
+            {GUARANTEES.map((g) => (
+              <div key={g.text} className="flex items-center gap-2 text-sm text-white/70">
+                <g.icon className="h-4 w-4 text-brand-accent" />
+                {g.text}
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal className="mt-10">
           {done ? (
             <div className="rounded-3xl border border-brand/30 bg-gradient-to-b from-brand/[0.12] to-transparent p-12 text-center" data-testid="apply-success">
               <CheckCircle2 className="mx-auto h-14 w-14 text-brand-accent" />
@@ -80,71 +107,113 @@ export const AppointmentForm = () => {
               className="rounded-3xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl sm:p-10"
               data-testid="appointment-form"
             >
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Owner Name" required>
-                  <Input data-testid="input-owner-name" className={inputCls} value={form.owner_name} onChange={set("owner_name")} placeholder="John Smith" />
-                </Field>
-                <Field label="Company Name" required>
-                  <Input data-testid="input-company-name" className={inputCls} value={form.company_name} onChange={set("company_name")} placeholder="Smith Roofing Co." />
-                </Field>
-                <Field label="Email" required>
-                  <Input data-testid="input-email" type="email" className={inputCls} value={form.email} onChange={set("email")} placeholder="john@company.com" />
-                </Field>
-                <Field label="Phone Number" required>
-                  <Input data-testid="input-phone" className={inputCls} value={form.phone} onChange={set("phone")} placeholder="(555) 123-4567" />
-                </Field>
-                <Field label="Service Offered" required>
-                  <Select value={form.service_offered} onValueChange={setVal("service_offered")}>
-                    <SelectTrigger data-testid="select-service" className={inputCls}>
-                      <SelectValue placeholder="Select service" />
-                    </SelectTrigger>
-                    <SelectContent className="border-white/10 bg-ink-900 text-white">
-                      {SERVICES.map((s) => (
-                        <SelectItem key={s} value={s} className="focus:bg-brand/20 focus:text-white">{s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-                <Field label="Annual Revenue" required>
-                  <Select value={form.annual_revenue} onValueChange={setVal("annual_revenue")}>
-                    <SelectTrigger data-testid="select-revenue" className={inputCls}>
-                      <SelectValue placeholder="Select range" />
-                    </SelectTrigger>
-                    <SelectContent className="border-white/10 bg-ink-900 text-white">
-                      {REVENUE.map((r) => (
-                        <SelectItem key={r} value={r} className="focus:bg-brand/20 focus:text-white">{r}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-                <Field label="Postal Code" required>
-                  <Input data-testid="input-postal" className={inputCls} value={form.postal_code} onChange={set("postal_code")} placeholder="90210" />
-                </Field>
-                <Field label="Website">
-                  <Input data-testid="input-website" className={inputCls} value={form.website} onChange={set("website")} placeholder="https://" />
-                </Field>
+              {/* Progress */}
+              <div className="mb-8 flex items-center gap-3" data-testid="form-step-indicator">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-white/50">
+                    <span className={step >= 1 ? "text-brand-accent" : ""}>1 · Your details</span>
+                    <span className={step >= 2 ? "text-brand-accent" : ""}>2 · Your business</span>
+                  </div>
+                  <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-brand to-brand-accent transition-all duration-500"
+                      style={{ width: step === 1 ? "50%" : "100%" }}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-5">
-                <Field label="Additional Notes">
-                  <Textarea
-                    data-testid="input-notes"
-                    className="min-h-[110px] rounded-xl border-white/10 bg-white/[0.03] text-white placeholder:text-white/30 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-0"
-                    value={form.notes}
-                    onChange={set("notes")}
-                    placeholder="Anything we should know about your goals?"
-                  />
-                </Field>
-              </div>
+              {step === 1 ? (
+                <div data-testid="form-step-1">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field label="Owner Name" required>
+                      <Input data-testid="input-owner-name" className={inputCls} value={form.owner_name} onChange={set("owner_name")} placeholder="John Smith" />
+                    </Field>
+                    <Field label="Company Name" required>
+                      <Input data-testid="input-company-name" className={inputCls} value={form.company_name} onChange={set("company_name")} placeholder="Smith Roofing Co." />
+                    </Field>
+                    <Field label="Email" required>
+                      <Input data-testid="input-email" type="email" className={inputCls} value={form.email} onChange={set("email")} placeholder="john@company.com" />
+                    </Field>
+                    <Field label="Phone Number" required>
+                      <Input data-testid="input-phone" className={inputCls} value={form.phone} onChange={set("phone")} placeholder="(555) 123-4567" />
+                    </Field>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    data-testid="form-continue-button"
+                    className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-[#285EE0] px-8 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white shadow-[0_0_50px_-10px_rgba(40,94,224,0.9)] transition-transform duration-300 hover:scale-[1.02] hover:bg-[#1f4fc4]"
+                  >
+                    Continue <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div data-testid="form-step-2">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field label="Service Offered" required>
+                      <Select value={form.service_offered} onValueChange={setVal("service_offered")}>
+                        <SelectTrigger data-testid="select-service" className={inputCls}>
+                          <SelectValue placeholder="Select service" />
+                        </SelectTrigger>
+                        <SelectContent className="border-white/10 bg-ink-900 text-white">
+                          {SERVICES.map((s) => (
+                            <SelectItem key={s} value={s} className="focus:bg-brand/20 focus:text-white">{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                    <Field label="Annual Revenue" required>
+                      <Select value={form.annual_revenue} onValueChange={setVal("annual_revenue")}>
+                        <SelectTrigger data-testid="select-revenue" className={inputCls}>
+                          <SelectValue placeholder="Select range" />
+                        </SelectTrigger>
+                        <SelectContent className="border-white/10 bg-ink-900 text-white">
+                          {REVENUE.map((r) => (
+                            <SelectItem key={r} value={r} className="focus:bg-brand/20 focus:text-white">{r}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                    <Field label="Postal Code" required>
+                      <Input data-testid="input-postal" className={inputCls} value={form.postal_code} onChange={set("postal_code")} placeholder="90210" />
+                    </Field>
+                    <Field label="Website">
+                      <Input data-testid="input-website" className={inputCls} value={form.website} onChange={set("website")} placeholder="https://" />
+                    </Field>
+                    <div className="sm:col-span-2">
+                      <Field label="Additional Notes">
+                        <Textarea
+                          data-testid="input-notes"
+                          className="min-h-[110px] rounded-xl border-white/10 bg-white/[0.03] text-white placeholder:text-white/30 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-0"
+                          value={form.notes}
+                          onChange={set("notes")}
+                          placeholder="Anything we should know about your goals?"
+                        />
+                      </Field>
+                    </div>
+                  </div>
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      data-testid="form-back-button"
+                      className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-6 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-white/10 sm:w-auto"
+                    >
+                      <ArrowLeft className="h-4 w-4" /> Back
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      data-testid="submit-lead-button"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#285EE0] px-8 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white shadow-[0_0_50px_-10px_rgba(40,94,224,0.9)] transition-transform duration-300 hover:scale-[1.02] hover:bg-[#1f4fc4] disabled:opacity-60"
+                    >
+                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Request Strategy Call <ArrowRight className="h-4 w-4" /></>}
+                    </button>
+                  </div>
+                </div>
+              )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                data-testid="submit-lead-button"
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-[#285EE0] hover:bg-[#1f4fc4] px-8 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white shadow-[0_0_50px_-10px_rgba(40,94,224,0.9)] transition-transform duration-300 hover:scale-[1.02] disabled:opacity-60"
-              >
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Request Strategy Call <ArrowRight className="h-4 w-4" /></>}
-              </button>
               <p className="mt-4 text-center text-xs text-white/40">
                 No obligation. We'll only reach out if we can genuinely help you grow.
               </p>
