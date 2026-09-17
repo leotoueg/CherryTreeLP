@@ -1,0 +1,21 @@
+{
+  "summary": "Full CRO regression pass. Backend pytest 7/7 (health, POST /api/leads happy path, GET newest-first, invalid email 422, missing phone 422, missing many fields 422, webhook forward no error in backend.err.log). Frontend Playwright covered every requested item: STATS BAND with $2M+ / 500+ / 7-Day; HERO badge reads 'For Contractors Doing Over $2M+ Per Year'; section order verified via getBoundingClientRect (stats-band before trust-bar, testimonials-section before why-different-section); 2-step form validation blocks empty continue and empty submit; step advance and Back button preserves step-1 values; happy-path submit (email qa-2step-test@example.com, Roofing, $2M–$5M, 85001) shows apply-success and toast; GET /api/leads returned the lead newest-first; no new 'Webhook forward failed' or ObjectId errors in backend.err.log after ~4s; FAQ contains both 'How much does it cost?' and 'burned by an agency'; risk-reversal row shows all three items above the form; zero JS console errors during the flow.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_leads_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "GET /api/leads exposes PII (email/phone) with no auth. Consider protecting this endpoint before shipping to production.",
+    "AppointmentForm swallows axios errors with a generic toast — no field-level validation feedback from the 422 response is surfaced (e.g. invalid email). Consider mapping backend errors to specific fields.",
+    "Website field accepts any string; add URL validation or Pydantic HttpUrl on backend.",
+    "asyncio.create_task fire-and-forget for webhook — task reference is discarded. In practice fine, but consider holding a strong ref."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (7/7)", "frontend": "100% (all requested checks passed)"},
+  "test_credentials": "none required (public endpoints)",
+  "seed_data_creation": "1 backend test lead (qa-webhook-test@example.com) auto-cleaned by session fixture; 1 frontend happy-path lead (qa-2step-test@example.com) deleted directly from Mongo after run (delete count=1 confirmed).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Live LeadConnector webhook fires on every POST /api/leads — minimize submits. Existing pytest already exercises 1 happy path + 3 validation cases + log inspection with pre-recorded offset (a stale 'Webhook forward failed' at line 146 dated 2026-09-17 is pre-fix and expected). Shadcn Select requires ~200-300ms wait after opening and option is selected via get_by_role('option', name='...', exact=True). Section order and stats verified via getBoundingClientRect DOM read to avoid Lenis scroll timing issues.",
+  "rca of the issue": "No issues found. All CRO changes (stats band, hero badge $2M+, section reorder, 2-step form with validation and back-preserve, risk reversal row, new FAQs) implemented correctly and lead submission + webhook forward path still healthy."
+}
