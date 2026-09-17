@@ -37,7 +37,7 @@ function getBookingDays() {
   const out = [];
   const base = new Date();
   base.setHours(0, 0, 0, 0);
-  for (let i = 1; i <= 6 && out.length < 4; i++) {
+  for (let i = 1; i <= 8 && out.length < 4; i++) {
     const d = new Date(base);
     d.setDate(base.getDate() + i);
     const dow = d.getDay();

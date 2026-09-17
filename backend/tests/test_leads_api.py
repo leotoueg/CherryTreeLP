@@ -1,7 +1,11 @@
-"""Backend tests for Cherry Tree Agency lead capture endpoints.
+"""Backend tests for Cherry Tree Agency lead capture endpoints (3-step form).
+
+Schema changes:
+- postal_code REMOVED
+- city (optional) ADDED
+- preferred_date, preferred_time ADDED
 
 Minimizes live POSTs since each successful POST fires the real LeadConnector webhook.
-Uses a single, clearly-labeled happy-path lead (email qa-webhook-test@example.com).
 Cleanup fixture deletes any TEST leads from Mongo after the run.
 """
 import os
@@ -22,6 +26,7 @@ BASE_URL = BASE_URL.rstrip("/")
 API = f"{BASE_URL}/api"
 
 TEST_EMAIL = "qa-webhook-test@example.com"
+TEST_EMAIL_NO_CITY = "qa-webhook-nocity@example.com"
 
 # Capture backend err log size at module import (BEFORE any POSTs happen)
 _BACKEND_ERR_LOG = "/var/log/supervisor/backend.err.log"
@@ -37,9 +42,11 @@ VALID_PAYLOAD = {
     "phone": "(555) 000-0000",
     "service_offered": "Roofing",
     "annual_revenue": "$2M \u2013 $5M",
-    "postal_code": "90210",
+    "city": "Dallas, TX",
     "website": "https://qa-webhook-test.example",
     "notes": "QA webhook regression test - safe to ignore",
+    "preferred_date": "Monday, Jan 26, 2026",
+    "preferred_time": "2:00 PM",
 }
 
 
@@ -61,8 +68,8 @@ class TestHealth:
 class TestLeads:
     created_id = None
 
-    def test_create_lead_valid(self, client):
-        """Single live POST -- exercises webhook forward."""
+    def test_create_lead_valid_with_city_and_booking(self, client):
+        """Single live POST -- exercises webhook forward with full new schema."""
         r = client.post(f"{API}/leads", json=VALID_PAYLOAD)
         assert r.status_code == 200, r.text
         data = r.json()
@@ -70,9 +77,11 @@ class TestLeads:
         assert "created_at" in data
         for k, v in VALID_PAYLOAD.items():
             assert data[k] == v, f"Field {k} mismatch: {data[k]!r} != {v!r}"
+        # Ensure removed field isn't echoed
+        assert "postal_code" not in data
         TestLeads.created_id = data["id"]
 
-    def test_get_leads_contains_created(self, client):
+    def test_get_leads_contains_created_newest_first(self, client):
         assert TestLeads.created_id is not None
         r = client.get(f"{API}/leads")
         assert r.status_code == 200
@@ -80,15 +89,43 @@ class TestLeads:
         assert isinstance(leads, list) and len(leads) > 0
         ids = [l["id"] for l in leads]
         assert TestLeads.created_id in ids
-        # newest first check
         timestamps = [l["created_at"] for l in leads]
         assert timestamps == sorted(timestamps, reverse=True)
-        # newest lead should be ours
         assert leads[0]["id"] == TestLeads.created_id
+        assert leads[0]["preferred_time"] == "2:00 PM"
+        assert leads[0]["preferred_date"] != ""
+
+    def test_create_lead_city_optional_omitted(self, client):
+        """City is optional -- omitting it should still return 200."""
+        payload = dict(VALID_PAYLOAD)
+        payload["email"] = TEST_EMAIL_NO_CITY
+        payload["company_name"] = "TEST_NoCity Co."
+        payload.pop("city")
+        r = client.post(f"{API}/leads", json=payload)
+        assert r.status_code == 200, r.text
+        data = r.json()
+        assert data["city"] == ""
+        assert data["email"] == TEST_EMAIL_NO_CITY
+
+    def test_create_lead_city_optional_empty_string(self, client):
+        """City empty string should also work."""
+        payload = dict(VALID_PAYLOAD)
+        payload["email"] = "qa-webhook-emptycity@example.com"
+        payload["company_name"] = "TEST_EmptyCity Co."
+        payload["city"] = ""
+        r = client.post(f"{API}/leads", json=payload)
+        assert r.status_code == 200, r.text
+        assert r.json()["city"] == ""
 
     def test_create_lead_invalid_email(self, client):
         payload = dict(VALID_PAYLOAD)
         payload["email"] = "not-an-email"
+        r = client.post(f"{API}/leads", json=payload)
+        assert r.status_code == 422, r.text
+
+    def test_create_lead_missing_email(self, client):
+        payload = dict(VALID_PAYLOAD)
+        payload.pop("email")
         r = client.post(f"{API}/leads", json=payload)
         assert r.status_code == 422, r.text
 
@@ -98,18 +135,13 @@ class TestLeads:
         r = client.post(f"{API}/leads", json=payload)
         assert r.status_code == 422, r.text
 
-    def test_create_lead_missing_many_required(self, client):
-        r = client.post(f"{API}/leads", json={"owner_name": "only"})
-        assert r.status_code == 422, r.text
-
     def test_webhook_forward_no_error_logged(self, client):
-        """Regression: ObjectId serialization bug -- ensure no 'Webhook forward failed'
-        appears in backend.err.log AFTER our POST timestamp. Webhook fires in a
+        """Regression: ensure no 'Webhook forward failed' or ObjectId serialization
+        error appears in backend.err.log AFTER our POSTs. Webhook fires in a
         background asyncio task, so wait a few seconds before inspecting."""
         if _LOG_START_OFFSET is None:
             pytest.skip(f"{_BACKEND_ERR_LOG} not accessible")
 
-        # Wait for background task to complete
         time.sleep(4)
 
         with open(_BACKEND_ERR_LOG, "r", errors="ignore") as fh:
@@ -129,7 +161,6 @@ class TestLeads:
 @pytest.fixture(scope="session", autouse=True)
 def cleanup_test_leads():
     yield
-    # Delete any test leads we created directly from Mongo to avoid polluting CRM/DB.
     try:
         from pymongo import MongoClient
         from dotenv import dotenv_values
@@ -138,8 +169,14 @@ def cleanup_test_leads():
         db_name = env.get("DB_NAME", "").strip('"')
         if mongo_url and db_name:
             mc = MongoClient(mongo_url)
-            res = mc[db_name]["leads"].delete_many({"email": TEST_EMAIL})
-            print(f"[cleanup] Deleted {res.deleted_count} test lead(s) with email={TEST_EMAIL}")
+            emails = [
+                TEST_EMAIL,
+                TEST_EMAIL_NO_CITY,
+                "qa-webhook-emptycity@example.com",
+                "qa-3step-test@example.com",
+            ]
+            res = mc[db_name]["leads"].delete_many({"email": {"$in": emails}})
+            print(f"[cleanup] Deleted {res.deleted_count} test lead(s)")
             mc.close()
     except Exception as e:
         print(f"[cleanup] Failed: {e}")

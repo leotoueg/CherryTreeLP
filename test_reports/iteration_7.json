@@ -1,0 +1,36 @@
+{
+  "summary": "Full regression on the 3-step Apply form. All 9 backend pytest cases pass and the full frontend flow works: opaque Step-2 Select dropdown, City optional, Step 3 self-booking with 4 weekdays + 3 times, error toast for missing date/time, back buttons preserve values, and happy-path submit yielded apply-success + a lead with preferred_time='2:00 PM' via GET /api/leads.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_leads_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py _forward_to_webhook uses synchronous `requests` inside asyncio.to_thread which is fine, but a shared httpx.AsyncClient would be cleaner and avoid extra thread hop.",
+    "getBookingDays() iterates only i<=6; if week starts on Saturday it may return <4 weekdays. Consider i<=8 for safety.",
+    "Frontend axios call has no client-side email validation before POST; relies solely on server 422. Minor UX improvement.",
+    "form-back buttons restore state correctly (state is lifted), no issue."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_leads_api.py"
+  ],
+  "success_rate": { "backend": "100% (9/9)", "frontend": "100%" },
+  "test_credentials": "N/A (no auth)",
+  "seed_data_creation": "Created 4 temp leads (qa-webhook-test, qa-webhook-nocity, qa-webhook-emptycity, qa-3step-test). All deleted post-run via pytest session fixture and manual mongo cleanup.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend schema: city optional, preferred_date/preferred_time strings; postal_code removed. test_leads_api.py updated accordingly. Live webhook is triggered on every POST — keep POSTs minimal and always clean up TEST_ leads by email. Dropdown opacity verified via computed background-color of [data-radix-select-viewport].parentElement — got rgb(11,11,15) which is opaque.",
+  "verification_evidence": {
+    "dropdown_bg_color": "rgb(11, 11, 15) (opaque)",
+    "date_options_count": 4,
+    "time_options_count": 3,
+    "newest_lead_preferred_time": "2:00 PM",
+    "newest_lead_city_when_omitted": ""
+  }
+}
