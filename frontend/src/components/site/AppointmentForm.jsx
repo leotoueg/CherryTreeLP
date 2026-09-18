@@ -73,6 +73,8 @@ export const AppointmentForm = () => {
       toast.error("Please select your service and revenue.");
       return;
     }
+    // Capture the lead (fires the form-submit webhook) even if they never pick a time
+    axios.post(`${API}/leads/partial`, form).catch(() => {});
     setStep(3);
   };
 
