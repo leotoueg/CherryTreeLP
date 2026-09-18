@@ -1,30 +1,34 @@
-# Cherry Tree Agency — Product Requirements (PRD)
+# Cherry Tree Agency — Landing Page PRD
 
-## Original Problem Statement
-Build an extremely high-converting, premium landing page for Cherry Tree Agency — a done-for-you marketing agency for established contractors ($1M+ revenue). Goal: get qualified contractors to watch the VSL and book a strategy call. Aesthetic between Apple/Stripe/Linear/Vercel and a high-end consulting firm. Copy: Alex Hormozi meets Apple.
+## Original problem statement
+High-converting premium landing page for a contractor marketing agency ("Cherry Tree Agency"). Goal: get qualified contractors ($2M+ revenue) to watch a VSL and book a strategy call.
 
-## Brand & Design (as built)
-- Dark / near-black (#050505) background, royal blue (#2C5CE5) + cyan (#00E5FF) accent (matches user's real logo/brand — overrode the brief's "cherry red").
-- Display: Anton (bold condensed uppercase). Body: Manrope.
-- Transparent logo generated from uploaded asset at `/public/cherrytree-logo.png`.
-- Motion: framer-motion scroll reveals + micro-interactions, lenis smooth scroll, masked line-by-line hero reveal, parallax VSL, marquee trust bar.
+## Product requirements
+- Aesthetic: premium dark mode, black bg, white type, royal blue accent `#285EE0` (Apple/Stripe/Linear feel)
+- Fonts: CocoGoose Pro (headings, local), Poppins (body, Google Fonts)
+- Stack: React + TailwindCSS + Framer Motion + Lenis smooth scroll
+- Sections: Hero (VSL) → Trust Bar → Video Testimonials → Why Different → Process Timeline → Offer/Feature Grid → FAQ → 3-step Appointment Form
+- Videos: self-hosted MP4s (VSL + 4 testimonials), transcoded to 1080p with faststart + poster frames
+- Mobile sticky CTA: "Call Us Now! (9am-5pm)" → tel:+16474903782
 
-## Architecture
-- Frontend: React (CRA/craco), Tailwind, framer-motion, lenis, shadcn/ui. Components in `/app/frontend/src/components/site/`.
-- Backend: FastAPI + MongoDB (motor). Routes prefixed `/api`.
-- Lead flow: `POST /api/leads` stores in Mongo `leads` and (optionally) forwards to `LEAD_WEBHOOK_URL` env (currently empty — owner sets later). `GET /api/leads` lists.
+## Architecture (CHANGED 2026-09-18)
+FRONTEND-ONLY deployment. The owner deploys just the static React build; there is NO backend in production.
+- Lead capture: browser POSTs directly to two LeadConnector (GHL) webhooks (CORS-open, verified):
+  - FORM SUBMIT (`REACT_APP_LEAD_WEBHOOK_URL`, ...cbf1d880...): fires on Step 2 Continue. Payload = all form fields + `lead_stage: "form_submitted"` + `submitted_at`. Captures drop-offs who never pick a time.
+  - APPOINTMENT REQUEST (`REACT_APP_APPOINTMENT_WEBHOOK_URL`, ...c5849cc5...): fires on Step 3 submit. Payload = all fields + preferred_date/time + `lead_stage: "appointment_requested"`. Success screen shows only after 200.
+- FastAPI + MongoDB backend still exists in the preview repo (/app/backend/server.py) but the frontend no longer calls it. GET /api/leads is protected by X-Admin-Key (see backend/.env) if the backend is ever used.
 
-## Implemented (2026-07-24)
-- Hero w/ kinetic masked headline, VSL (lazy YouTube embed), dual CTAs, social proof row.
-- Trust bar marquee, Why We're Different, 6-step Process timeline, 4 Video Testimonials w/ modal, 12-item Feature grid, Who This Is For, FAQ accordion, Appointment form (9 fields), Footer, mobile sticky CTA.
-- Backend leads endpoint + optional webhook forwarding. SEO meta tags.
-- Tested end-to-end: backend 100%, frontend 100% (iteration_1).
+## Implemented (changelog)
+- 2026-09-18: Frontend-only dual-webhook wiring (step 2 → form webhook, step 3 → appointment webhook). Verified via network interception (iteration_9, 100% pass).
+- 2026-09-18: Hero VSL frame border changed white/10 → brand blue (#285EE0/50 wrapper, /40 player) on mobile + desktop.
+- 2026-09-18: Backend: /api/leads/partial + upsert-by-email + secured GET /api/leads (kept for preview only).
+- Earlier: full page build, CRO reorder, video transcoding, custom VSL player (click-to-play, no controls), 3-step form, $2M qualifier, mobile hero fixes, CFC testimonial (Ali Vafaeian, CFC Contracting, Toronto), sticky call CTA.
 
-## Personas
-- Established contractor owners ($1M–$25M+) in roofing, remodeling, HVAC, concrete, landscaping, etc., who want more profitable jobs without managing marketing themselves.
+## Test reports
+/app/test_reports/iteration_1..7.json (old backend flow), iteration_9.json (frontend-only flow — current source of truth)
 
-## Backlog / Next
-- P1: Wire the real webhook URL (`LEAD_WEBHOOK_URL` in backend/.env) once owner provides it.
-- P1: Replace placeholder VSL + testimonial videos with real YouTube/Vimeo IDs.
-- P2: Optional email notification on new lead (Resend integration).
-- P2: Simple admin view for leads; production CORS hardening; tighten field validation.
+## Backlog (prioritized)
+- P0: Meta Pixel + Conversions + Lead event on booking — BLOCKED on user's Pixel ID. Frontend-only: add pixel to public/index.html, fire event in AppointmentForm success.
+- P1 (owner action): PUBLISH the Appointment Request workflow in GHL — it answered "test request received" (draft mode) during testing.
+- P2: Desktop "Call Us" CTA in header (tel:+16474903782) — awaiting user confirmation.
+- P2: Replace step-3 date/time picker with a real GHL calendar embed (true availability, works frontend-only).

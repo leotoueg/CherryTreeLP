@@ -1,0 +1,41 @@
+{
+  "summary": "Frontend-only landing page tested end-to-end. Verified direct browser POSTs to both GHL LeadConnector webhooks with correct payloads, no backend /api/leads calls, validations, success state, hero VSL blue border, and smoke checks (testimonials, FAQ, no console errors). All requested checks passed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "form_webhook_fired_on_step2_continue": true,
+    "form_webhook_url_matches_cbf1d880": true,
+    "form_webhook_payload_fields_present": ["owner_name","company_name","email","phone","service_offered","annual_revenue","lead_stage"],
+    "form_webhook_lead_stage": "form_submitted",
+    "appointment_webhook_fired_on_step3_submit": true,
+    "appointment_webhook_url_matches_c5849cc5": true,
+    "appointment_webhook_response_status": 200,
+    "appointment_webhook_payload_includes_date_time": true,
+    "appointment_webhook_lead_stage": "appointment_requested",
+    "success_panel_apply_success_visible": true,
+    "no_backend_api_leads_calls": true,
+    "step1_empty_validation_blocks_navigation": true,
+    "step3_missing_datetime_blocks_submit_and_no_appt_call": true,
+    "hero_vsl_border_color": "rgba(40, 94, 224, 0.4) (#285EE0)",
+    "testimonials_render": true,
+    "faq_render": true,
+    "console_errors": 0
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "goStep3() fires the form webhook via axios.post(...).catch(() => {}) without awaiting — good for UX (non-blocking) and errors are silently swallowed. Consider logging errors to aid debugging if webhook delivery fails.",
+    "REACT_APP_LEAD_WEBHOOK_URL / REACT_APP_APPOINTMENT_WEBHOOK_URL are read at build time; if either env is missing, axios.post(undefined,...) will throw. A guard/default would harden the code."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "n/a (public landing page)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Frontend-only architecture: AppointmentForm posts directly to two GHL webhooks (env: REACT_APP_LEAD_WEBHOOK_URL, REACT_APP_APPOINTMENT_WEBHOOK_URL). Do NOT expect /api/leads calls. Success panel [data-testid='apply-success'] appears only after appointment webhook returns 200. Revenue option text uses en dash '$2M – $5M'."
+}
