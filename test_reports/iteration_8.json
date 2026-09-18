@@ -1,0 +1,22 @@
+{
+  "summary": "Dual-webhook lead capture + secured GET /api/leads tested end-to-end. Backend pytest suite (7 tests) all pass. Frontend UI flow verified: Step1 validation blocks advance; Step2->Step3 triggers POST /api/leads/partial creating a record with lead_stage='form_submitted' and empty preferred_date/time; Step3 empty submit validation blocks submit; Step3 full submit shows apply-success panel and record is UPSERTED to lead_stage='appointment_requested' with preferred_date + preferred_time (exactly 1 record per email — no duplicates). Admin GET /api/leads returns 403 without header, 200 with correct key. Landing page hero renders with no console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_leads_dual_webhook.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Optional: goStep3() in AppointmentForm.jsx fires axios.post to /leads/partial with .catch(()=>{}) — silent failure is fine for drop-off capture but no observability. Consider logging via a lightweight beacon or Sentry breadcrumb.",
+    "Optional: _forward_to_webhook uses blocking `requests` inside asyncio.to_thread — acceptable, but httpx.AsyncClient would fit better in an async FastAPI app.",
+    "Minor: ADMIN_API_KEY check should also reject empty x_admin_key even before comparing (already handled — ok)."
+  ],
+  "updated_files": ["/app/backend/tests/test_leads_dual_webhook.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Admin GET /api/leads header X-Admin-Key: psb7Kxt5g9s9pKmpjnD-n9Mm-f5BJBXw",
+  "seed_data_creation": "Test leads with emails prefixed TEST_ and qa+ were created in the leads collection during backend + UI tests.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Dual webhook split verified. Partial (form_submitted) fires on step-2 -> step-3 transition (fire-and-forget). Full (appointment_requested) fires on step-3 submit. Upsert-by-email works: only 1 record per email regardless of partial+full sequence. Admin key auth on GET /api/leads works. Do not run pytest concurrently with itself against the same DB — no locking issues seen but tests use unique timestamped emails so re-runs are safe."
+}

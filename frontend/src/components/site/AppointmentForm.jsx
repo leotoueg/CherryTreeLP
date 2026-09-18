@@ -9,7 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+// No backend required: leads post straight to the LeadConnector webhooks.
+const FORM_WEBHOOK_URL = process.env.REACT_APP_LEAD_WEBHOOK_URL;
+const APPOINTMENT_WEBHOOK_URL = process.env.REACT_APP_APPOINTMENT_WEBHOOK_URL;
 
 const SERVICES = ["Roofing", "Bathroom Remodeling", "Kitchen Remodeling", "Painting", "Concrete", "Landscaping", "HVAC", "Windows & Doors", "Flooring", "Pools", "Home Services", "Other"];
 const REVENUE = ["$1M – $2M", "$2M – $5M", "$5M – $10M", "$10M – $25M", "$25M+", "Under $1M"];
@@ -68,13 +70,19 @@ export const AppointmentForm = () => {
     setStep(2);
   };
 
+  const buildPayload = (stage) => ({
+    ...form,
+    lead_stage: stage,
+    submitted_at: new Date().toISOString(),
+  });
+
   const goStep3 = () => {
     if (["service_offered", "annual_revenue"].find((k) => !form[k].trim())) {
       toast.error("Please select your service and revenue.");
       return;
     }
-    // Capture the lead (fires the form-submit webhook) even if they never pick a time
-    axios.post(`${API}/leads/partial`, form).catch(() => {});
+    // Fire the form-submit webhook now so the lead is captured even if they never pick a time
+    axios.post(FORM_WEBHOOK_URL, buildPayload("form_submitted")).catch(() => {});
     setStep(3);
   };
 
@@ -86,7 +94,7 @@ export const AppointmentForm = () => {
     }
     setLoading(true);
     try {
-      await axios.post(`${API}/leads`, form);
+      await axios.post(APPOINTMENT_WEBHOOK_URL, buildPayload("appointment_requested"));
       setDone(true);
       toast.success("Request received. We'll be in touch shortly.");
       setForm(EMPTY);

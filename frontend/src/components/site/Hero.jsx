@@ -96,8 +96,8 @@ export const Hero = () => {
             transition={{ duration: 0.7, delay: 0.35, ease: EASE }}
             className="mt-7 w-full lg:hidden"
           >
-            <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_30px_90px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl">
-              <VideoPlayer source={VSL_SOURCE} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl-mobile" />
+            <div className="rounded-[1.25rem] border border-[#285EE0]/50 bg-white/[0.03] p-2 shadow-[0_30px_90px_-30px_rgba(44,92,229,0.8)] backdrop-blur-xl">
+              <VideoPlayer source={VSL_SOURCE} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl-mobile" borderClass="border-[#285EE0]/40" />
             </div>
           </motion.div>
 
@@ -178,8 +178,8 @@ export const Hero = () => {
           style={{ y: videoY, scale: videoScale }}
           className="hidden w-full lg:block"
         >
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2 shadow-[0_40px_120px_-40px_rgba(44,92,229,0.55)] backdrop-blur-xl sm:p-3">
-            <VideoPlayer source={VSL_SOURCE} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl" />
+          <div className="rounded-[1.5rem] border border-[#285EE0]/50 bg-white/[0.03] p-2 shadow-[0_40px_120px_-30px_rgba(44,92,229,0.8)] backdrop-blur-xl sm:p-3">
+            <VideoPlayer source={VSL_SOURCE} poster={VSL_POSTER} label="See how it works" eyebrow="Our Process" testid="hero-vsl" borderClass="border-[#285EE0]/40" />
           </div>
         </motion.div>
       </div>

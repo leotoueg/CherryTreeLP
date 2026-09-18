@@ -67,13 +67,14 @@ export const VideoPlayer = ({
   eyebrow = "Video Sales Letter",
   autoPlay = false,
   testid = "video-player",
+  borderClass = "border-white/10",
 }) => {
   const [playing, setPlaying] = useState(autoPlay);
   const src = source || { kind: "youtube", id: videoId };
 
   return (
     <div
-      className="relative w-full aspect-video overflow-hidden rounded-2xl border border-white/10 bg-black"
+      className={`relative w-full aspect-video overflow-hidden rounded-2xl border ${borderClass} bg-black`}
       data-testid={testid}
     >
       <AnimatePresence mode="wait">
