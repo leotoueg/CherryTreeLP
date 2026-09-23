@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, MapPin, X } from "lucide-react";
+import { Play, MapPin, X, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogClose } from "../ui/dialog";
 import SectionHeading from "./SectionHeading";
 import SectionCTA from "./SectionCTA";
@@ -88,18 +88,18 @@ export const VideoTestimonials = () => {
                   </span>
                   <span className="absolute bottom-0 left-0 right-0 p-5">
                     <p className="font-display text-xl uppercase tracking-tight text-white">{t.name}</p>
-                    <p
-                      className="mt-1.5 inline-block rounded-full border border-[#285EE0]/40 bg-[#285EE0]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-brand-accent backdrop-blur-md"
-                      data-testid={`testimonial-stat-${i + 1}`}
-                    >
-                      {t.stat}
-                    </p>
-                    <p className="mt-1.5 text-sm text-white/70">{t.company}</p>
+                    <p className="mt-1 text-sm text-white/70">{t.company}</p>
                     <p className="mt-1 flex items-center gap-1 text-xs text-white/45">
                       <MapPin className="h-3 w-3" /> {t.location}
                     </p>
                   </span>
                 </div>
+                <p
+                  className="mt-3 flex items-center gap-2 font-display text-lg uppercase tracking-tight text-brand-accent"
+                  data-testid={`testimonial-stat-${i + 1}`}
+                >
+                  <TrendingUp className="h-4 w-4 shrink-0" /> {t.stat}
+                </p>
               </motion.button>
             </Reveal>
           ))}
