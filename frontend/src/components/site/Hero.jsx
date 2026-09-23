@@ -116,7 +116,7 @@ export const Hero = () => {
           {/* Mobile CTA (after subtext) */}
           <div className="mt-8 flex w-full justify-center lg:hidden">
             <CTAButton to="apply" data-testid="hero-primary-cta-mobile" className="w-full sm:w-auto">
-              Book Your Strategy Call <ArrowRight className="h-4 w-4" />
+              Apply To Work With Cherrytree <ArrowRight className="h-4 w-4" />
             </CTAButton>
           </div>
 
@@ -128,7 +128,7 @@ export const Hero = () => {
             className="mt-7 hidden flex-col gap-4 sm:flex-row lg:flex lg:justify-start"
           >
             <CTAButton to="apply" data-testid="hero-primary-cta">
-              Book Your Strategy Call <ArrowRight className="h-4 w-4" />
+              Apply To Work With Cherrytree <ArrowRight className="h-4 w-4" />
             </CTAButton>
             <CTAButton to="vsl" variant="glass" data-testid="hero-secondary-cta">
               Watch The Video

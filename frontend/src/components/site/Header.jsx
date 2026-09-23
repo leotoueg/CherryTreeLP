@@ -33,7 +33,7 @@ export const Header = () => {
           <img src="/cherrytree-logo.png" alt="Cherry Tree Agency" className="h-8 w-auto sm:h-9" />
         </button>
         <CTAButton to="apply" size="md" data-testid="header-cta-button">
-          Book Your Strategy Call
+          Apply To Work With Cherrytree
         </CTAButton>
       </div>
     </motion.header>

@@ -1,24 +1,18 @@
+import { Fragment } from "react";
 import { motion } from "framer-motion";
-import {
-  Clapperboard, Search, Facebook, LayoutTemplate, Database, Workflow,
-  MessageSquareText, Star, KanbanSquare, LineChart, FileBarChart, FlaskConical,
-} from "lucide-react";
+import { Clapperboard, Megaphone, LayoutTemplate, Database, MessageSquareText, CalendarCheck, Trophy, ArrowRight } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import SectionCTA from "./SectionCTA";
+import Reveal from "./Reveal";
 
-const FEATURES = [
-  { icon: Clapperboard, title: "Professional Video Production", body: "Cinematic commercials and ad creative filmed on-site with your team.", span: true },
-  { icon: Search, title: "Google Ads", body: "High-intent search campaigns built to capture buyers ready now." },
-  { icon: Facebook, title: "Facebook & Instagram Ads", body: "Scroll-stopping paid social that fills the top of your funnel." },
-  { icon: LayoutTemplate, title: "Landing Pages", body: "Conversion-engineered pages that turn clicks into booked calls." },
-  { icon: Database, title: "CRM Setup", body: "A single source of truth for every lead, job and conversation." },
-  { icon: Workflow, title: "Lead Nurture Automation", body: "Automated follow-up that works your pipeline around the clock.", span: true },
-  { icon: MessageSquareText, title: "Missed Call Text Back", body: "Never lose a lead — every missed call gets an instant text." },
-  { icon: Star, title: "Review Automation", body: "Systematically build the reputation that wins your market." },
-  { icon: KanbanSquare, title: "Pipeline Management", body: "See every opportunity and exactly where it stands." },
-  { icon: LineChart, title: "Campaign Optimization", body: "Weekly tuning to lower cost per job and lift close rates." },
-  { icon: FileBarChart, title: "Monthly Reporting", body: "Clear numbers tied to revenue — not vanity metrics." },
-  { icon: FlaskConical, title: "Creative Testing", body: "Always testing new angles to keep performance climbing." },
+const FLOW = [
+  { icon: Clapperboard, label: "Content" },
+  { icon: Megaphone, label: "Ads" },
+  { icon: LayoutTemplate, label: "Landing Page" },
+  { icon: Database, label: "CRM" },
+  { icon: MessageSquareText, label: "Follow-Up" },
+  { icon: CalendarCheck, label: "Appointment" },
+  { icon: Trophy, label: "Sale" },
 ];
 
 export const FeatureGrid = () => {
@@ -27,36 +21,43 @@ export const FeatureGrid = () => {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           chapter="04"
-          kicker="What you get"
-          title="One team. The entire system."
-          subtitle="Everything required to generate, nurture and close more profitable jobs — done for you."
+          kicker="The system"
+          title={<>Everything your growth team needs.<br />One partner.</>}
+          subtitle="Most contractors buy these pieces from five vendors and stitch them together themselves. We build and run the whole pipeline — each stage feeds the next, so nothing leaks."
         />
 
-        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 24, scale: 0.97 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.55, delay: (i % 3) * 0.06, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -5 }}
-              className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition-colors hover:border-brand/40 ${
-                f.span ? "lg:col-span-2" : ""
-              }`}
-              data-testid={`feature-${i + 1}`}
-            >
-              <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-brand/20 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-[#285EE0]/30 bg-[#285EE0]/10 text-[#285EE0]">
-                <f.icon className="h-6 w-6" />
-              </span>
-              <h3 className="relative mt-6 font-display text-xl uppercase tracking-tight text-[#285EE0]">
-                {f.title}
-              </h3>
-              <p className="relative mt-2 max-w-md text-sm leading-relaxed text-white/55">{f.body}</p>
-            </motion.div>
-          ))}
+        <div className="mt-14 flex flex-col gap-2 lg:flex-row lg:items-stretch" data-testid="system-flow">
+          {FLOW.map((n, i) => {
+            const last = i === FLOW.length - 1;
+            return (
+              <Fragment key={n.label}>
+                <Reveal delay={i * 0.06} className="flex-1">
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    className={`flex h-full flex-col items-center justify-center gap-3 rounded-2xl border px-4 py-6 text-center ${
+                      last
+                        ? "border-[#285EE0]/60 bg-[#285EE0]/15 shadow-[0_0_40px_-12px_rgba(40,94,224,0.8)]"
+                        : "border-white/10 bg-white/[0.03]"
+                    }`}
+                    data-testid={`system-node-${i + 1}`}
+                  >
+                    <n.icon className={`h-6 w-6 ${last ? "text-brand-accent" : "text-[#285EE0]"}`} />
+                    <span className="font-display text-sm uppercase tracking-wide text-white">{n.label}</span>
+                  </motion.div>
+                </Reveal>
+                {!last && (
+                  <div className="flex items-center justify-center py-1 lg:py-0">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-[#285EE0]/60 lg:rotate-0" />
+                  </div>
+                )}
+              </Fragment>
+            );
+          })}
         </div>
+
+        <p className="mt-8 text-center text-sm text-white/40" data-testid="system-flow-caption">
+          Built, connected and optimized by one team — you see every stage in one place.
+        </p>
 
         <SectionCTA testid="features-cta" />
       </div>

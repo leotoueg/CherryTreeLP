@@ -17,7 +17,7 @@ export const Footer = () => {
             data-testid="footer-cta-button"
             className="rounded-full bg-[#285EE0] px-7 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-[0_0_40px_-12px_rgba(40,94,224,0.9)] transition-colors hover:bg-[#1f4fc4]"
           >
-            Book Your Strategy Call
+            Apply To Work With Cherrytree
           </button>
         </div>
 

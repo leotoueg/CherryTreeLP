@@ -18,7 +18,7 @@ export const CTABand = ({ text = "Ready to fill your pipeline with profitable jo
             {text}
           </p>
           <CTAButton to="apply" data-testid={`${testid}-button`} className="shrink-0">
-            Book Your Strategy Call <ArrowRight className="h-4 w-4" />
+            Apply To Work With Cherrytree <ArrowRight className="h-4 w-4" />
           </CTAButton>
         </div>
       </motion.div>

@@ -1,8 +1,7 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { ClipboardList, PhoneCall, Plane, Clapperboard, Rocket, TrendingUp } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import SectionCTA from "./SectionCTA";
+import Reveal from "./Reveal";
 
 const STEPS = [
   { icon: ClipboardList, title: "Apply", body: "Tell us about your business. We only take on contractors we know we can grow." },
@@ -14,61 +13,38 @@ const STEPS = [
 ];
 
 export const ProcessTimeline = () => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 65%", "end 60%"],
-  });
-  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
   return (
-    <section className="relative py-24 sm:py-32" data-testid="process-section">
+    <section className="relative py-24 sm:py-28" data-testid="process-section">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          chapter="03"
+          chapter="05"
           kicker="The process"
           title="Six steps to a full pipeline"
           subtitle="A clear, proven path from application to a market-leading acquisition system."
         />
 
-        <div ref={ref} className="relative mt-16 pl-2">
-          {/* Track */}
-          <div className="absolute left-[27px] top-2 bottom-2 w-px bg-white/10 sm:left-[31px]" />
-          <motion.div
-            style={{ scaleY: lineScale }}
-            className="absolute left-[27px] top-2 bottom-2 w-px origin-top bg-gradient-to-b from-brand to-brand-accent sm:left-[31px]"
-          />
-
-          <div className="space-y-10 sm:space-y-14">
-            {STEPS.map((step, i) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, x: -24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="relative flex items-start gap-6 sm:gap-8"
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {STEPS.map((step, i) => (
+            <Reveal key={step.title} delay={(i % 3) * 0.08} className="h-full">
+              <div
+                className="group h-full rounded-3xl border border-white/10 bg-white/[0.02] p-7 transition-colors hover:border-[#285EE0]/40"
                 data-testid={`process-step-${i + 1}`}
               >
-                <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-ink-900 shadow-[0_0_30px_-10px_rgba(40,94,224,0.8)]">
-                  <step.icon className="h-6 w-6 text-[#285EE0]" />
+                <div className="flex items-center justify-between">
+                  <span className="font-display text-4xl leading-none text-white/15 transition-colors duration-300 group-hover:text-[#285EE0]/70">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#285EE0]/30 bg-[#285EE0]/10 shadow-[0_0_30px_-12px_rgba(40,94,224,0.8)]">
+                    <step.icon className="h-5 w-5 text-[#285EE0]" />
+                  </span>
                 </div>
-                <div className="pt-1">
-                  <div className="flex items-baseline gap-3">
-                    <span className="font-display text-sm text-white/30">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="font-display text-2xl uppercase tracking-tight text-[#285EE0] sm:text-3xl">
-                      {step.title}
-                    </h3>
-                  </div>
-                  <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/55 sm:text-base">
-                    {step.body}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                <h3 className="mt-5 font-display text-xl uppercase tracking-tight text-white">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/55">{step.body}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
 
         <SectionCTA testid="process-cta" />

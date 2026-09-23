@@ -10,6 +10,7 @@ import CTABand from "./components/site/CTABand";
 import WhyDifferent from "./components/site/WhyDifferent";
 import ProcessTimeline from "./components/site/ProcessTimeline";
 import VideoTestimonials from "./components/site/VideoTestimonials";
+import WeFilmIt from "./components/site/WeFilmIt";
 import FeatureGrid from "./components/site/FeatureGrid";
 import WhoThisIsFor from "./components/site/WhoThisIsFor";
 import FAQ from "./components/site/FAQ";
@@ -51,11 +52,12 @@ function App() {
         <Hero />
         <StatsBand />
         <TrustBar />
-        <CTABand text="We become your in-house growth team." testid="cta-band-top" />
         <VideoTestimonials />
+        <WeFilmIt />
         <WhyDifferent />
-        <ProcessTimeline />
+        <CTABand text="We become your in-house growth team." testid="cta-band-top" />
         <FeatureGrid />
+        <ProcessTimeline />
         <WhoThisIsFor />
         <FAQ />
         <AppointmentForm />

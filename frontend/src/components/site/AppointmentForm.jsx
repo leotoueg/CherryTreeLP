@@ -7,6 +7,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import SectionHeading from "./SectionHeading";
+import VideoPlayer from "./VideoPlayer";
 import { trackEvent } from "../../lib/pixel";
 import Reveal from "./Reveal";
 
@@ -98,7 +99,7 @@ export const AppointmentForm = () => {
       await axios.post(APPOINTMENT_WEBHOOK_URL, buildPayload("appointment_requested"));
       trackEvent("Schedule");
       setDone(true);
-      toast.success("Request received. We'll be in touch shortly.");
+      toast.success("Application received. We'll be in touch shortly.");
       setForm(EMPTY);
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
@@ -117,10 +118,10 @@ export const AppointmentForm = () => {
 
       <div className="relative mx-auto max-w-4xl px-5 sm:px-8">
         <SectionHeading
-          chapter="07"
+          chapter="08"
           kicker="Apply"
-          title={<>Ready to become the go-to<br />contractor in your market?</>}
-          subtitle="After submitting, keep your phone nearby. If it looks like we may be a fit, our team will call you shortly."
+          title={<>See if we're a fit</>}
+          subtitle="Tell us about your business. If it looks like we can help, we'll call you shortly to learn more and map out next steps."
           align="center"
         />
 
@@ -139,8 +140,18 @@ export const AppointmentForm = () => {
           {done ? (
             <div className="rounded-3xl border border-brand/30 bg-gradient-to-b from-brand/[0.12] to-transparent p-8 text-center sm:p-12" data-testid="apply-success">
               <CheckCircle2 className="mx-auto h-14 w-14 text-brand-accent" />
-              <h3 className="mt-6 font-display text-3xl uppercase tracking-tight text-white" data-testid="success-heading">Request received</h3>
+              <h3 className="mt-6 font-display text-3xl uppercase tracking-tight text-white" data-testid="success-heading">Application received</h3>
               <p className="mt-3 text-lg font-semibold text-white">Keep your phone nearby — we'll be calling you shortly.</p>
+              <div className="mx-auto mt-8 max-w-lg text-left">
+                <VideoPlayer
+                  source={{ kind: "mp4", src: "/confirmation/next-steps.mp4" }}
+                  poster="/confirmation/poster.jpg"
+                  label="What happens next"
+                  eyebrow="Watch this first"
+                  testid="success-video"
+                  borderClass="border-[#285EE0]/40"
+                />
+              </div>
               <p className="mx-auto mt-4 max-w-md text-white/60">
                 One of our team members will give you a quick call to learn a little more about your business and make sure we can actually help before locking in your strategy call.
               </p>
@@ -190,7 +201,7 @@ export const AppointmentForm = () => {
                     </Field>
                   </div>
                   <button type="button" onClick={goStep2} data-testid="form-continue-button" className={`mt-8 w-full ${pillBtn}`}>
-                    Continue <ArrowRight className="h-4 w-4" />
+                    Continue Application <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               )}
@@ -245,7 +256,7 @@ export const AppointmentForm = () => {
                       <ArrowLeft className="h-4 w-4" /> Back
                     </button>
                     <button type="button" onClick={goStep3} data-testid="form-continue-2-button" className={`flex-1 ${pillBtn}`}>
-                      Continue <ArrowRight className="h-4 w-4" />
+                      Continue Application <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
@@ -311,7 +322,7 @@ export const AppointmentForm = () => {
                       <ArrowLeft className="h-4 w-4" /> Back
                     </button>
                     <button type="submit" disabled={loading} data-testid="submit-lead-button" className={`flex-1 ${pillBtn}`}>
-                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Request My Strategy Call <ArrowRight className="h-4 w-4" /></>}
+                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Submit Application <ArrowRight className="h-4 w-4" /></>}
                     </button>
                   </div>
                 </div>
