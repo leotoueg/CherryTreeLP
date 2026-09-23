@@ -3,12 +3,12 @@ import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 
 const SHOTS = [
-  { src: "/film-stills/shot-1.jpg", alt: "CherryTree crew filming a concrete job site with a gimbal-mounted cinema camera" },
-  { src: "/film-stills/shot-2.jpg", alt: "Filming a client interview on location with a RODE mic" },
-  { src: "/film-stills/shot-3.jpg", alt: "Capturing building exterior footage on-site" },
-  { src: "/film-stills/shot-4.jpg", alt: "Professional lighting setup for an on-location shoot" },
-  { src: "/film-stills/shot-5.jpg", alt: "Drone crew flying aerials at a client property" },
-  { src: "/film-stills/shot-6.jpg", alt: "Strategy session with a client's team" },
+  { src: "/film-clips/clip-1.mp4", poster: "/film-stills/shot-1.jpg", alt: "CherryTree crew filming an interior renovation on-site" },
+  { src: "/film-clips/clip-2.mp4", poster: "/film-stills/shot-2.jpg", alt: "Client's branded truck and team on a job" },
+  { src: "/film-clips/clip-3.mp4", poster: "/film-stills/shot-3.jpg", alt: "Crew filming a luxury kitchen with a gimbal" },
+  { src: "/film-clips/clip-4.mp4", poster: "/film-stills/shot-4.jpg", alt: "Crew capturing interior footage on location" },
+  { src: "/film-clips/clip-5.mp4", poster: "/film-stills/shot-5.jpg", alt: "Filming a contractor working with power tools on-site" },
+  { src: "/film-clips/clip-6.mp4", poster: "/film-stills/shot-6.jpg", alt: "On the roof with a client's crew capturing content" },
 ];
 
 export const WeFilmIt = () => {
@@ -31,10 +31,15 @@ export const WeFilmIt = () => {
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className="group overflow-hidden rounded-2xl border border-white/10"
               >
-                <img
+                <video
                   src={s.src}
-                  alt={s.alt}
-                  loading="lazy"
+                  poster={s.poster}
+                  aria-label={s.alt}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
                   className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               </motion.div>
