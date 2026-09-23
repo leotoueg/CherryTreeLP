@@ -50,7 +50,7 @@ export const WeFilmIt = () => {
 
       <Reveal delay={0.15}>
         <p className="mx-auto mt-10 max-w-2xl px-5 text-center text-base leading-relaxed text-white/70 sm:text-lg" data-testid="film-it-caption">
-          We fly to your market and spend the day capturing your team, your jobs, your customers and your
+          We fly to your city and spend the day capturing your team, your jobs, your customers and your
           story — then turn that footage into months of advertising creative.
         </p>
       </Reveal>
