@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackCustom } from "../../lib/pixel";
 
 const DEFAULT_VIDEO = "aqz-KE-bpKQ";
 
@@ -13,9 +14,27 @@ function embedUrl(source) {
 }
 
 // Distraction-free MP4 player: no seek bar, no duration — click anywhere to play/pause.
-function MinimalMp4({ src, poster, testid }) {
+function MinimalMp4({ src, poster, testid, vslTracking = false }) {
   const ref = useRef(null);
   const [paused, setPaused] = useState(false);
+  const milestones = useRef(new Set());
+
+  // Fire Meta Pixel custom events (VSL_25/50/75/100) once per milestone per page view
+  const fireMilestone = (m) => {
+    if (milestones.current.has(m)) return;
+    milestones.current.add(m);
+    trackCustom(`VSL_${m}`, { percent: m });
+  };
+
+  const onTimeUpdate = () => {
+    if (!vslTracking) return;
+    const v = ref.current;
+    if (!v || !v.duration) return;
+    const pct = (v.currentTime / v.duration) * 100;
+    [25, 50, 75].forEach((m) => {
+      if (pct >= m) fireMilestone(m);
+    });
+  };
 
   const toggle = () => {
     const v = ref.current;
@@ -36,9 +55,13 @@ function MinimalMp4({ src, poster, testid }) {
         controlsList="nodownload noplaybackrate"
         disablePictureInPicture
         onContextMenu={(e) => e.preventDefault()}
+        onTimeUpdate={onTimeUpdate}
         onPlay={() => setPaused(false)}
         onPause={() => setPaused(true)}
-        onEnded={() => setPaused(true)}
+        onEnded={() => {
+          setPaused(true);
+          if (vslTracking) fireMilestone(100);
+        }}
       />
       <AnimatePresence>
         {paused && (
@@ -68,6 +91,7 @@ export const VideoPlayer = ({
   autoPlay = false,
   testid = "video-player",
   borderClass = "border-white/10",
+  vslTracking = false,
 }) => {
   const [playing, setPlaying] = useState(autoPlay);
   const src = source || { kind: "youtube", id: videoId };
@@ -80,7 +104,7 @@ export const VideoPlayer = ({
       <AnimatePresence mode="wait">
         {playing ? (
           src.kind === "mp4" ? (
-            <MinimalMp4 key="mp4" src={src.src} poster={poster} testid={testid} />
+            <MinimalMp4 key="mp4" src={src.src} poster={poster} testid={testid} vslTracking={vslTracking} />
           ) : (
             <motion.iframe
               key="frame"

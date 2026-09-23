@@ -19,6 +19,7 @@ FRONTEND-ONLY deployment. The owner deploys just the static React build; there i
 - FastAPI + MongoDB backend still exists in the preview repo (/app/backend/server.py) but the frontend no longer calls it. GET /api/leads is protected by X-Admin-Key (see backend/.env) if the backend is ever used.
 
 ## Implemented (changelog)
+- 2026-09-23: Meta Pixel installed (ID 1071617615485156, base code in public/index.html, PageView on load). Standard `Schedule` event fires on successful booking (AppointmentForm). Custom events `VSL_25/50/75/100` fire at VSL watch milestones (VideoPlayer vslTracking prop, hero only) for retargeting audiences. Safe wrapper in src/lib/pixel.js (no-op if blocked). Verified via fbq spy (simulated milestones + real booking).
 - 2026-09-18: Frontend-only dual-webhook wiring (step 2 → form webhook, step 3 → appointment webhook). Verified via network interception (iteration_9, 100% pass).
 - 2026-09-18: Hero VSL frame border changed white/10 → brand blue (#285EE0/50 wrapper, /40 player) on mobile + desktop.
 - 2026-09-18: Backend: /api/leads/partial + upsert-by-email + secured GET /api/leads (kept for preview only).
@@ -28,7 +29,7 @@ FRONTEND-ONLY deployment. The owner deploys just the static React build; there i
 /app/test_reports/iteration_1..7.json (old backend flow), iteration_9.json (frontend-only flow — current source of truth)
 
 ## Backlog (prioritized)
-- P0: Meta Pixel + Conversions + Lead event on booking — BLOCKED on user's Pixel ID. Frontend-only: add pixel to public/index.html, fire event in AppointmentForm success.
 - P1 (owner action): PUBLISH the Appointment Request workflow in GHL — it answered "test request received" (draft mode) during testing.
+- P1 (owner action): In Meta Ads Manager, build Custom Audiences from the VSL_25 / VSL_50 / VSL_75 / VSL_100 events (Audiences → Create Custom Audience → Website → pick event). Events appear in Events Manager ~20 min after first firing.
 - P2: Desktop "Call Us" CTA in header (tel:+16474903782) — awaiting user confirmation.
 - P2: Replace step-3 date/time picker with a real GHL calendar embed (true availability, works frontend-only).

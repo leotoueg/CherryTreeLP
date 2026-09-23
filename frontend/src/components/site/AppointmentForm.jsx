@@ -7,6 +7,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import SectionHeading from "./SectionHeading";
+import { trackEvent } from "../../lib/pixel";
 import Reveal from "./Reveal";
 
 // No backend required: leads post straight to the LeadConnector webhooks.
@@ -95,6 +96,7 @@ export const AppointmentForm = () => {
     setLoading(true);
     try {
       await axios.post(APPOINTMENT_WEBHOOK_URL, buildPayload("appointment_requested"));
+      trackEvent("Schedule");
       setDone(true);
       toast.success("Request received. We'll be in touch shortly.");
       setForm(EMPTY);
