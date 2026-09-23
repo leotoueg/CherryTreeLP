@@ -13,6 +13,7 @@ const TESTIMONIALS = [
     company: "Apex Bath Remodeling",
     location: "Cleburne, TX",
     industry: "Bath Remodeling",
+    stat: "15 Projects in 5 Months",
     poster: "/testimonials/apex-baths.jpg",
     source: { kind: "mp4", src: "/testimonials/apex-baths.mp4" },
   },
@@ -21,6 +22,7 @@ const TESTIMONIALS = [
     company: "Roofing Monkeys",
     location: "Toronto, ON",
     industry: "Roofing",
+    stat: "Over 100 Roofs Sold",
     poster: "/testimonials/roofing-monkeys.jpg",
     source: { kind: "mp4", src: "/testimonials/roofing-monkeys.mp4" },
   },
@@ -29,6 +31,7 @@ const TESTIMONIALS = [
     company: "Prime Baths of New Mexico",
     location: "Albuquerque, NM",
     industry: "Bath Remodeling",
+    stat: "Over $400K in Revenue Generated",
     poster: "/testimonials/prime-baths.jpg",
     source: { kind: "mp4", src: "/testimonials/prime-baths.mp4" },
   },
@@ -37,6 +40,7 @@ const TESTIMONIALS = [
     company: "CFC Contracting",
     location: "Toronto, Ontario",
     industry: "General Contracting",
+    stat: "Over 30 Million Views Generated",
     poster: "/testimonials/cfc.jpg",
     source: { kind: "mp4", src: "/testimonials/cfc.mp4" },
   },
@@ -84,7 +88,13 @@ export const VideoTestimonials = () => {
                   </span>
                   <span className="absolute bottom-0 left-0 right-0 p-5">
                     <p className="font-display text-xl uppercase tracking-tight text-white">{t.name}</p>
-                    <p className="mt-1 text-sm text-white/70">{t.company}</p>
+                    <p
+                      className="mt-1.5 inline-block rounded-full border border-[#285EE0]/40 bg-[#285EE0]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-brand-accent backdrop-blur-md"
+                      data-testid={`testimonial-stat-${i + 1}`}
+                    >
+                      {t.stat}
+                    </p>
+                    <p className="mt-1.5 text-sm text-white/70">{t.company}</p>
                     <p className="mt-1 flex items-center gap-1 text-xs text-white/45">
                       <MapPin className="h-3 w-3" /> {t.location}
                     </p>
