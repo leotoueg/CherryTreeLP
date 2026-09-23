@@ -120,7 +120,7 @@ export const AppointmentForm = () => {
           chapter="07"
           kicker="Apply"
           title={<>Ready to become the go-to<br />contractor in your market?</>}
-          subtitle="Tell us about your business, then lock in your strategy call."
+          subtitle="After submitting, keep your phone nearby. If it looks like we may be a fit, our team will call you shortly."
           align="center"
         />
 
@@ -137,12 +137,20 @@ export const AppointmentForm = () => {
 
         <Reveal className="mt-10">
           {done ? (
-            <div className="rounded-3xl border border-brand/30 bg-gradient-to-b from-brand/[0.12] to-transparent p-12 text-center" data-testid="apply-success">
+            <div className="rounded-3xl border border-brand/30 bg-gradient-to-b from-brand/[0.12] to-transparent p-8 text-center sm:p-12" data-testid="apply-success">
               <CheckCircle2 className="mx-auto h-14 w-14 text-brand-accent" />
-              <h3 className="mt-6 font-display text-3xl uppercase tracking-tight text-white">Request received</h3>
-              <p className="mx-auto mt-3 max-w-md text-white/60">
-                Thanks for applying. We'll confirm your strategy call shortly and send the details to your email.
+              <h3 className="mt-6 font-display text-3xl uppercase tracking-tight text-white" data-testid="success-heading">Request received</h3>
+              <p className="mt-3 text-lg font-semibold text-white">Keep your phone nearby — we'll be calling you shortly.</p>
+              <p className="mx-auto mt-4 max-w-md text-white/60">
+                One of our team members will give you a quick call to learn a little more about your business and make sure we can actually help before locking in your strategy call.
               </p>
+              <p className="mt-6 inline-block rounded-full border border-brand/40 bg-brand/10 px-5 py-2.5 text-sm text-white/80" data-testid="success-callout-number">
+                The call will come from <span className="font-semibold text-white">+1 (647) 885-0384</span>
+              </p>
+              <div className="mx-auto mt-8 max-w-md border-t border-white/10 pt-6" data-testid="success-cant-talk">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Can't talk right now?</p>
+                <p className="mt-2 text-sm text-white/50">No problem — reply to our text with a better time and we'll call you then.</p>
+              </div>
             </div>
           ) : (
             <form
@@ -303,14 +311,14 @@ export const AppointmentForm = () => {
                       <ArrowLeft className="h-4 w-4" /> Back
                     </button>
                     <button type="submit" disabled={loading} data-testid="submit-lead-button" className={`flex-1 ${pillBtn}`}>
-                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Request Strategy Call <ArrowRight className="h-4 w-4" /></>}
+                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Request My Strategy Call <ArrowRight className="h-4 w-4" /></>}
                     </button>
                   </div>
                 </div>
               )}
 
-              <p className="mt-4 text-center text-xs text-white/40">
-                No obligation. We'll only reach out if we can genuinely help you grow.
+              <p className="mt-4 text-center text-xs text-white/40" data-testid="form-microcopy">
+                Takes 60 seconds • No long-term contracts • We'll call you shortly after you apply
               </p>
             </form>
           )}
