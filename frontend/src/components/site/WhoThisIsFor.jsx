@@ -20,8 +20,9 @@ const NOT_IDEAL = [
 
 export const WhoThisIsFor = () => {
   return (
-    <section className="relative border-y border-white/10 bg-black/40 py-24 sm:py-32" data-testid="who-section">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section className="relative overflow-hidden border-y border-[#285EE0]/30 bg-gradient-to-b from-[#285EE0]/[0.12] via-[#285EE0]/[0.05] to-black py-24 sm:py-32" data-testid="who-section">
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-[#285EE0]/20 blur-[160px]" />
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           chapter="06"
           kicker="Who this is for"

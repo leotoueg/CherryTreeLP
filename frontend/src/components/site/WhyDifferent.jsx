@@ -6,17 +6,16 @@ import Reveal from "./Reveal";
 const TYPICAL = [
   "Runs the same ads for every contractor",
   "Uses stock footage or whatever you send them",
-  "Sends leads and calls it a day",
-  "Gives you another dashboard to check",
-  "Rarely sees your business in person",
+  "Sends leads through basic, generic forms",
+  "Leaves you with disorganized leads to figure out",
 ];
 
 const CHERRY = [
   "We fly to your business",
   "We professionally film your team",
-  "We build the entire acquisition system",
-  "We connect marketing to your CRM",
-  "We optimize toward profitable jobs",
+  "We build customized landing pages for you",
+  "We set up a custom CRM system for your campaign",
+  "We build your entire funnel — you never touch it",
 ];
 
 export const WhyDifferent = () => {
@@ -27,14 +26,14 @@ export const WhyDifferent = () => {
           chapter="03"
           kicker="Why we're different"
           title={<>Most agencies run ads.<br />We become your growth team.</>}
-          subtitle="There is a difference between renting attention and building an asset. We build the asset."
+          subtitle="Other agencies generate leads and leave you to figure out what to do with them. We build the landing pages, CRM and follow-up — the whole funnel, working together from first click to booked job."
         />
 
         <div className="mt-16 grid gap-6 lg:grid-cols-2">
-          {/* Typical agency */}
+          {/* Other agencies */}
           <Reveal>
             <div className="h-full rounded-3xl border border-white/20 bg-white/[0.04] p-8 sm:p-10" data-testid="comparison-typical">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/60">Typical marketing agency</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/60">Other marketing agencies</p>
               <ul className="mt-8 space-y-5">
                 {TYPICAL.map((t) => (
                   <li key={t} className="flex items-center gap-3">
@@ -46,7 +45,7 @@ export const WhyDifferent = () => {
                 ))}
               </ul>
               <p className="mt-10 text-sm leading-relaxed text-white/50">
-                You end up paying a retainer for reports you don't read and results you can't feel.
+                You get leads dumped in your lap — and you're left figuring out what to do with them.
               </p>
             </div>
           </Reveal>
@@ -71,7 +70,7 @@ export const WhyDifferent = () => {
                 ))}
               </ul>
               <p className="relative mt-10 text-sm leading-relaxed text-white/60">
-                One team. One system. Built around profitable jobs — not vanity metrics.
+                Landing pages, CRM, lead organization and follow-up — built and managed end to end. You just answer the phone.
               </p>
             </motion.div>
           </Reveal>

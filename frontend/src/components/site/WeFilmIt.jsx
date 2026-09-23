@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 
@@ -22,38 +21,39 @@ export const WeFilmIt = () => {
           title={<>We don't ask you to send us content.<br />We come film it.</>}
           subtitle="Stock footage is why most contractor ads look identical. Ours don't."
         />
+      </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3" data-testid="film-stills-strip">
-          {SHOTS.map((s, i) => (
-            <Reveal key={s.src} delay={i * 0.06}>
-              <motion.div
-                whileHover={{ y: -6 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="group overflow-hidden rounded-2xl border border-white/10"
-              >
-                <video
-                  src={s.src}
-                  poster={s.poster}
-                  aria-label={s.alt}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              </motion.div>
-            </Reveal>
+      <div className="relative mt-14 overflow-hidden" data-testid="film-stills-strip">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-black to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-black to-transparent" />
+        <div className="marquee-track-reverse gap-4 pr-4">
+          {[...SHOTS, ...SHOTS].map((s, i) => (
+            <div
+              key={`${s.src}-${i}`}
+              className="w-40 shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:w-52"
+            >
+              <video
+                src={s.src}
+                poster={s.poster}
+                aria-label={s.alt}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="aspect-[3/4] w-full object-cover"
+              />
+            </div>
           ))}
         </div>
-
-        <Reveal delay={0.15}>
-          <p className="mx-auto mt-10 max-w-2xl text-center text-base leading-relaxed text-white/70 sm:text-lg" data-testid="film-it-caption">
-            We fly to your market and spend the day capturing your team, your jobs, your customers and your
-            story — then turn that footage into months of advertising creative.
-          </p>
-        </Reveal>
       </div>
+
+      <Reveal delay={0.15}>
+        <p className="mx-auto mt-10 max-w-2xl px-5 text-center text-base leading-relaxed text-white/70 sm:text-lg" data-testid="film-it-caption">
+          We fly to your market and spend the day capturing your team, your jobs, your customers and your
+          story — then turn that footage into months of advertising creative.
+        </p>
+      </Reveal>
     </section>
   );
 };

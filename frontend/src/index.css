@@ -117,6 +117,22 @@ html.lenis body {
   to { transform: translateX(-50%); }
 }
 
+/* Reverse marquee track (content travels left → right) */
+.marquee-track-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-reverse 38s linear infinite;
+}
+.marquee-track-reverse:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+
 /* Gradient text */
 .text-gradient {
   background: linear-gradient(120deg, #2C5CE5 0%, #00E5FF 100%);
@@ -133,6 +149,9 @@ html.lenis body {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
+    animation: none;
+  }
+  .marquee-track-reverse {
     animation: none;
   }
 }
