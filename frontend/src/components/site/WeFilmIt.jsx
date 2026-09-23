@@ -3,10 +3,12 @@ import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 
 const SHOTS = [
-  { src: "/film-stills/shot-1.jpg", alt: "On-site filmed interview with a contractor client" },
-  { src: "/film-stills/shot-2.jpg", alt: "Real client work footage — crews, jobs and before-and-afters" },
-  { src: "/film-stills/shot-3.jpg", alt: "Filming on location at a client's office" },
-  { src: "/film-stills/shot-4.jpg", alt: "Capturing a contractor's story in person" },
+  { src: "/film-stills/shot-1.jpg", alt: "CherryTree crew filming a concrete job site with a gimbal-mounted cinema camera" },
+  { src: "/film-stills/shot-2.jpg", alt: "Filming a client interview on location with a RODE mic" },
+  { src: "/film-stills/shot-3.jpg", alt: "Capturing building exterior footage on-site" },
+  { src: "/film-stills/shot-4.jpg", alt: "Professional lighting setup for an on-location shoot" },
+  { src: "/film-stills/shot-5.jpg", alt: "Drone crew flying aerials at a client property" },
+  { src: "/film-stills/shot-6.jpg", alt: "Strategy session with a client's team" },
 ];
 
 export const WeFilmIt = () => {
@@ -21,9 +23,9 @@ export const WeFilmIt = () => {
           subtitle="Stock footage is why most contractor ads look identical. Ours don't."
         />
 
-        <div className="mt-14 grid grid-cols-2 gap-4 lg:grid-cols-4" data-testid="film-stills-strip">
+        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3" data-testid="film-stills-strip">
           {SHOTS.map((s, i) => (
-            <Reveal key={s.src} delay={i * 0.08}>
+            <Reveal key={s.src} delay={i * 0.06}>
               <motion.div
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -33,7 +35,7 @@ export const WeFilmIt = () => {
                   src={s.src}
                   alt={s.alt}
                   loading="lazy"
-                  className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               </motion.div>
             </Reveal>
