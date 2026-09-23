@@ -23,14 +23,14 @@ export const WeFilmIt = () => {
         />
       </div>
 
-      <div className="relative mt-14 overflow-hidden" data-testid="film-stills-strip">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-black to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-black to-transparent" />
-        <div className="marquee-track-reverse gap-4 pr-4">
+      <div className="relative mx-auto mt-14 max-w-[1096px] overflow-hidden" data-testid="film-stills-strip">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-black via-black/70 to-transparent sm:w-36" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-black via-black/70 to-transparent sm:w-36" />
+        <div className="marquee-track-reverse gap-6 pr-6">
           {[...SHOTS, ...SHOTS].map((s, i) => (
             <div
               key={`${s.src}-${i}`}
-              className="w-40 shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:w-52"
+              className="w-52 shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:w-64"
             >
               <video
                 src={s.src}
