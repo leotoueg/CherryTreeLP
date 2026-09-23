@@ -19,6 +19,7 @@ FRONTEND-ONLY deployment. The owner deploys just the static React build; there i
 - FastAPI + MongoDB backend still exists in the preview repo (/app/backend/server.py) but the frontend no longer calls it. GET /api/leads is protected by X-Admin-Key (see backend/.env) if the backend is ever used.
 
 ## Implemented (changelog)
+- 2026-09-23: Changed launch promise from 7 days to 30 days ("30-Day Launch" stats band, "Campaigns live in ~30 days" form badge).
 - 2026-09-23: Form CRO copy update — success box now sets call expectation ("Keep your phone nearby — we'll be calling you shortly", call-from number +1 (647) 885-0384, "Can't talk right now?" text-reply fallback). Above-form subtitle now pre-frames the follow-up call; submit CTA reads "Request My Strategy Call"; under-CTA microcopy "Takes 60 seconds • No long-term contracts • We'll call you shortly after you apply".
 - 2026-09-23: Meta Pixel installed (ID 1071617615485156, base code in public/index.html, PageView on load). Standard `Schedule` event fires on successful booking (AppointmentForm). Custom events `VSL_25/50/75/100` fire at VSL watch milestones (VideoPlayer vslTracking prop, hero only) for retargeting audiences. Safe wrapper in src/lib/pixel.js (no-op if blocked). Verified via fbq spy (simulated milestones + real booking).
 - 2026-09-18: Frontend-only dual-webhook wiring (step 2 → form webhook, step 3 → appointment webhook). Verified via network interception (iteration_9, 100% pass).

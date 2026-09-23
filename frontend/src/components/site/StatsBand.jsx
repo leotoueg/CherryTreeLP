@@ -3,7 +3,7 @@ import Reveal from "./Reveal";
 const STATS = [
   { value: "$100K+", label: "Monthly ad spend managed" },
   { value: "500+", label: "Sold projects" },
-  { value: "7-Day", label: "Launch" },
+  { value: "30-Day", label: "Launch" },
 ];
 
 export const StatsBand = () => {

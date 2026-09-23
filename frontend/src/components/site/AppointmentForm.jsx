@@ -21,7 +21,7 @@ const TIMES = ["10:00 AM", "2:00 PM", "4:00 PM"];
 const GUARANTEES = [
   { icon: ShieldCheck, text: "No long-term contracts" },
   { icon: BadgeCheck, text: "100% done-for-you" },
-  { icon: Clock, text: "Campaigns live in ~7 days" },
+  { icon: Clock, text: "Campaigns live in ~30 days" },
 ];
 
 const EMPTY = {
