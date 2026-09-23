@@ -19,6 +19,7 @@ FRONTEND-ONLY deployment. The owner deploys just the static React build; there i
 - FastAPI + MongoDB backend still exists in the preview repo (/app/backend/server.py) but the frontend no longer calls it. GET /api/leads is protected by X-Admin-Key (see backend/.env) if the backend is ever used.
 
 ## Implemented (changelog)
+- 2026-09-23: Confirmation call-from number changed to +1 (647) 490-3782 (matches sticky CTA number).
 - 2026-09-23: Copy tweak: WeFilmIt caption now "We fly to your city…" (was "market").
 - 2026-09-23: WhyDifferent copy revised per user: left "Other marketing agencies" (4 X items incl. generic forms + disorganized leads), right CHERRYTREE (5 checks: fly to you, film team, customized landing pages, custom CRM setup, entire funnel you never touch). WhoThisIsFor section now blue-highlighted (brand border/gradient + glow). WeFilmIt strip is now a compact horizontal AUTO-SCROLLING marquee (left→right, .marquee-track-reverse in index.css, hover-pause, reduced-motion safe, w-52/sm:w-64 cards, exactly 4 visible via max-w-[1096px] viewport, deep edge-fade masks so cards fade in/out while rotating).
 - 2026-09-23: Testimonial outcome stats moved BELOW each video card (bold brand-blue display line with trending icon, data-testid testimonial-stat-N): Stephen Cruey "15 Projects in 5 Months", Emilio Talavera/Roofing Monkeys "Over 100 Roofs Sold", Clint Roberts "Over $400K in Revenue Generated", Ali Vafaeian/CFC "Over 30 Million Views Generated".
