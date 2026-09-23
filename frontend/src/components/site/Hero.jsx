@@ -108,8 +108,9 @@ export const Hero = () => {
             transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
             className="mt-6 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
           >
-            We help established contractors generate more profitable jobs with professionally filmed ads,
-            paid advertising, CRM automation and sales systems. We fly to you. We build it all. We run it.
+            We help established contractors generate more profitable jobs by building and running their entire
+            acquisition system — professionally filmed ads, paid media, landing pages, CRM and follow-up.
+            We fly to you. We build it. We run it.
           </motion.p>
 
           {/* Mobile CTA (after subtext) */}
